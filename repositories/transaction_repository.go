@@ -14,6 +14,23 @@ type transactionRepository struct {
 	db *gorm.DB
 }
 
+// GetTransactionByUserId implements interfaces.TransactionRepository.
+func (repo *transactionRepository) GetTransactionsByWalletId(ctx context.Context, walletId uint) ([]models.Transaction, error) {
+	var transactions []models.Transaction
+	err := repo.db.WithContext(ctx).Model(&models.Transaction{}).
+		Preload("Receiver").
+		Preload("Sender").
+		Where("sender_id = ? OR receiver_id = ?", walletId, walletId).
+		Order("created_at DESC").
+		Limit(10).
+		Find(&transactions).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
+}
+
 // BeginTrx implements interfaces.TransactionRepository.
 func (repo *transactionRepository) BeginTrx(ctx context.Context) interfaces.TransactionRepository {
 	panic("unimplemented")

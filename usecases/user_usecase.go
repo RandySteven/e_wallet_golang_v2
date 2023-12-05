@@ -19,6 +19,28 @@ type userUsecase struct {
 	walletRepo interfaces.WalletRepository
 }
 
+// GetUserDetail implements interfaces.UserUsecase.
+func (usecase *userUsecase) GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error) {
+	user, err := usecase.userRepo.GetById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	wallet, err := usecase.walletRepo.GetByUserId(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	userDetail := &res.UserDetail{
+		Name:         user.Name,
+		Email:        user.Email,
+		WalletNumber: wallet.Number,
+		Balance:      wallet.Balance,
+	}
+
+	return userDetail, nil
+}
+
 // LoginUser implements interfaces.UserUsecase.
 func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginRequest) (*res.UserLoginResponse, error) {
 	user, err := usecase.userRepo.GetByEmail(ctx, login.Email)

@@ -8,6 +8,7 @@ import (
 	"assignment_4/utils"
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -15,6 +16,31 @@ import (
 
 type UserHandler struct {
 	usecase interfaces.UserUsecase
+}
+
+// GetUserById implements interfaces.UserHandler.
+func (handler *UserHandler) GetUserById(c *gin.Context) {
+	var (
+		requestId = uuid.NewString()
+		ctx       = context.WithValue(c.Request.Context(), "request_id", requestId)
+	)
+	paramId := c.Param("id")
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		return
+	}
+
+	userDetail, err := handler.usecase.GetUserDetail(ctx, uint(id))
+	if err != nil {
+		return
+	}
+
+	resp := res.Response{
+		Message: "Success get user",
+		Data:    userDetail,
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 // LoginUser implements interfaces.UserHandler.

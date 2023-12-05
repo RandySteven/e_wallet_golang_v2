@@ -16,6 +16,28 @@ type TransactionHandler struct {
 	uscase interfaces.TransactionUsecase
 }
 
+// GetAllHistoryUserTransactions implements interfaces.TransactionHandler.
+func (handler *TransactionHandler) GetAllHistoryUserTransactions(c *gin.Context) {
+	var (
+		requestId = uuid.NewString()
+		ctx       = context.WithValue(c.Request.Context(), "requestId", requestId)
+	)
+
+	getUserId, _ := c.Get("x-user-id")
+	userId, _ := getUserId.(uint)
+
+	transactions, err := handler.uscase.GetUserHistoryTransactions(ctx, userId)
+	if err != nil {
+		return
+	}
+
+	resp := res.Response{
+		Message: "Get all user transactions history",
+		Data:    transactions,
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 // TopupTransaction implements interfaces.TransactionHandler.
 func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 	var (

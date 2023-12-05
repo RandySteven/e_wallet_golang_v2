@@ -14,6 +14,15 @@ type transactionUsecase struct {
 	transactionRepo interfaces.TransactionRepository
 }
 
+// GetUserHistoryTransactions implements interfaces.TransactionUsecase.
+func (usecase *transactionUsecase) GetUserHistoryTransactions(ctx context.Context, id uint) ([]models.Transaction, error) {
+	wallet, err := usecase.walletRepo.GetByUserId(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return usecase.transactionRepo.GetTransactionsByWalletId(ctx, wallet.ID)
+}
+
 // CreateTopupTransaction implements interfaces.TransactionUsecase.
 func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, topup *req.TopupRequest) (*models.Transaction, error) {
 	wallet, err := usecase.walletRepo.GetByUserId(ctx, topup.UserID)

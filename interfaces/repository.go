@@ -30,6 +30,7 @@ type (
 		Repository[models.Transaction, TransactionRepository]
 		CreateTopupTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 		CreateTransferTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
+		GetTransactionsByWalletId(ctx context.Context, walletId uint) ([]models.Transaction, error)
 	}
 
 	SourceOfFundRepository interface {
