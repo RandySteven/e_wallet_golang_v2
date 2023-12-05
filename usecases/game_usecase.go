@@ -27,6 +27,9 @@ func (usecase *gameUsecase) PlayGame(ctx context.Context, game *models.Game) (*m
 	}
 
 	boxes, err := usecase.boxesRepo.GetNineRandomBoxes(ctx)
+	if err != nil {
+		return nil, err
+	}
 	game.Box1 = &boxes[0]
 	game.Box2 = &boxes[1]
 	game.Box3 = &boxes[2]

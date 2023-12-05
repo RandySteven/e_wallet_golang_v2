@@ -95,7 +95,7 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 		Data:    transaction,
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusCreated, resp)
 }
 
 // TransferTransaction implements interfaces.TransactionHandler.
@@ -125,7 +125,7 @@ func (handler *TransactionHandler) TransferTransaction(c *gin.Context) {
 		Data:    transaction,
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusCreated, resp)
 }
 
 func NewTransactionHandler(usecase interfaces.TransactionUsecase) *TransactionHandler {

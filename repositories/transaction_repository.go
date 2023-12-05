@@ -6,7 +6,6 @@ import (
 	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"context"
-	"log"
 	"strconv"
 
 	"github.com/shopspring/decimal"
@@ -22,15 +21,15 @@ type transactionRepository struct {
 func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query *entities.QueryCondition) ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	limit, _ := strconv.Atoi(query.Limit)
-	// page, _ := strconv.Atoi(query.Page)
-	log.Println(query.SortedBy)
+	page, _ := strconv.Atoi(query.Page)
 	desc := false
 	if query.Sort == enums.Desc {
 		desc = true
 	}
 	sql := repo.db.WithContext(ctx).Model(&models.Transaction{}).
 		Preload("Receiver").
-		Preload("Sender")
+		Preload("Sender").
+		Offset((page - 1) * limit)
 
 	if query.SortedBy != "" {
 		sql.Order(clause.OrderByColumn{
@@ -39,9 +38,6 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 		})
 	}
 
-	if limit != 0 {
-		sql.Limit(limit)
-	}
 	err := sql.Find(&transactions).
 		Error
 	if err != nil {

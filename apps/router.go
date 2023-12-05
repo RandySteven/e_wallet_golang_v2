@@ -29,4 +29,7 @@ func (h *Handlers) InitRouter(r *gin.RouterGroup) {
 	transactionsRouter := r.Group("transactions")
 	transactionsRouter.GET("", h.TransactionHandler.GetAllTransactionsRecords)
 	transactionsRouter.GET("histories", h.TransactionHandler.GetAllHistoryUserTransactions)
+
+	gameRouter := r.Group("games")
+	gameRouter.POST("", h.GameHandler.PlayGame)
 }
