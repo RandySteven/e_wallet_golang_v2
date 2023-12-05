@@ -83,6 +83,29 @@ func (_m *BoxRepository) GetById(ctx context.Context, id uint) (*models.Box, err
 	return r0, r1
 }
 
+// GetNineRandomBoxes provides a mock function with given fields: ctx
+func (_m *BoxRepository) GetNineRandomBoxes(ctx context.Context) ([]models.Box, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []models.Box
+	if rf, ok := ret.Get(0).(func(context.Context) []models.Box); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.Box)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Save provides a mock function with given fields: ctx, entity
 func (_m *BoxRepository) Save(ctx context.Context, entity *models.Box) (*models.Box, error) {
 	ret := _m.Called(ctx, entity)

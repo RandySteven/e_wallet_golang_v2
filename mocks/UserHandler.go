@@ -13,6 +13,11 @@ type UserHandler struct {
 	mock.Mock
 }
 
+// ForgotPassword provides a mock function with given fields: c
+func (_m *UserHandler) ForgotPassword(c *gin.Context) {
+	_m.Called(c)
+}
+
 // GetUserById provides a mock function with given fields: c
 func (_m *UserHandler) GetUserById(c *gin.Context) {
 	_m.Called(c)
@@ -25,6 +30,11 @@ func (_m *UserHandler) LoginUser(c *gin.Context) {
 
 // RegisterUser provides a mock function with given fields: c
 func (_m *UserHandler) RegisterUser(c *gin.Context) {
+	_m.Called(c)
+}
+
+// ResetPassword provides a mock function with given fields: c
+func (_m *UserHandler) ResetPassword(c *gin.Context) {
 	_m.Called(c)
 }
 

@@ -21,6 +21,10 @@ type (
 		RegisterUser(ctx context.Context, user *models.User) (*models.User, error)
 	}
 
+	ForgotPasswordRepository interface {
+		Repository[models.ForgotPasswordToken, ForgotPasswordRepository]
+	}
+
 	WalletRepository interface {
 		Repository[models.Wallet, WalletRepository]
 		GetByNumber(ctx context.Context, number string) (*models.Wallet, error)

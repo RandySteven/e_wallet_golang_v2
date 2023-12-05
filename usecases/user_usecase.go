@@ -13,11 +13,36 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type userUsecase struct {
-	userRepo   interfaces.UserRepository
-	walletRepo interfaces.WalletRepository
+	userRepo       interfaces.UserRepository
+	walletRepo     interfaces.WalletRepository
+	forgotPassRepo interfaces.ForgotPasswordRepository
+}
+
+// ForgotPassword implements interfaces.UserUsecase.
+func (usecase *userUsecase) ForgotPassword(ctx context.Context, forgot *req.ForgotPasswordRequest) (*models.ForgotPasswordToken, error) {
+	user, err := usecase.userRepo.GetByEmail(ctx, forgot.Email)
+	if err != nil || user == nil {
+		return nil, &apperror.ErrDataNotFound{Data: "user"}
+	}
+
+	currentTime := time.Now()
+	forgotPassword := &models.ForgotPasswordToken{
+		ResetToken:  uuid.NewString(),
+		TokenExpiry: currentTime.Add(15 * time.Minute),
+		IsValid:     true,
+		UserID:      user.ID,
+	}
+
+	forgotPassword, err = usecase.forgotPassRepo.Save(ctx, forgotPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	return forgotPassword, nil
 }
 
 // GetUserDetail implements interfaces.UserUsecase.
@@ -85,10 +110,13 @@ func (usecase *userUsecase) RegisterUser(ctx context.Context, user *models.User)
 	return user, err
 }
 
-func NewUserUsecase(userRepo interfaces.UserRepository, walletRepo interfaces.WalletRepository) *userUsecase {
+func NewUserUsecase(userRepo interfaces.UserRepository,
+	walletRepo interfaces.WalletRepository,
+	forgotPassRepo interfaces.ForgotPasswordRepository) *userUsecase {
 	return &userUsecase{
-		userRepo:   userRepo,
-		walletRepo: walletRepo,
+		userRepo:       userRepo,
+		walletRepo:     walletRepo,
+		forgotPassRepo: forgotPassRepo,
 	}
 }
 

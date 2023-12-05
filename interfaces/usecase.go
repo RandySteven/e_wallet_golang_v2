@@ -13,6 +13,7 @@ type (
 		RegisterUser(ctx context.Context, user *models.User) (*models.User, error)
 		LoginUser(ctx context.Context, login *req.UserLoginRequest) (*res.UserLoginResponse, error)
 		GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error)
+		ForgotPassword(ctx context.Context, forgot *req.ForgotPasswordRequest) (*models.ForgotPasswordToken, error)
 	}
 
 	TransactionUsecase interface {

@@ -28,6 +28,8 @@ func main() {
 	v1 := r.Group("/v1")
 	v1.POST("/register", handlers.UserHandler.RegisterUser)
 	v1.POST("/login", handlers.UserHandler.LoginUser)
+	v1.POST("/forgot-password", handlers.UserHandler.ForgotPassword)
+
 	handlers.InitRouter(v1)
 
 	srv := http.Server{

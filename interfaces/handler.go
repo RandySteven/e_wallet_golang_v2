@@ -7,6 +7,8 @@ type (
 		RegisterUser(c *gin.Context)
 		LoginUser(c *gin.Context)
 		GetUserById(c *gin.Context)
+		ForgotPassword(c *gin.Context)
+		ResetPassword(c *gin.Context)
 	}
 
 	TransactionHandler interface {

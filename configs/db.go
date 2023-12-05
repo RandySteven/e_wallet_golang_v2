@@ -13,11 +13,14 @@ import (
 )
 
 type Repository struct {
-	UserRepository         interfaces.UserRepository
-	WalletRepository       interfaces.WalletRepository
-	TransactionRepository  interfaces.TransactionRepository
-	SourceOfFundRepository interfaces.SourceOfFundRepository
-	db                     *gorm.DB
+	UserRepository           interfaces.UserRepository
+	WalletRepository         interfaces.WalletRepository
+	TransactionRepository    interfaces.TransactionRepository
+	SourceOfFundRepository   interfaces.SourceOfFundRepository
+	GameRepository           interfaces.GameRepository
+	BoxRepository            interfaces.BoxRepository
+	ForgotPasswordRepository interfaces.ForgotPasswordRepository
+	db                       *gorm.DB
 }
 
 func NewRepository(config *models.Config) (*Repository, error) {
@@ -37,11 +40,14 @@ func NewRepository(config *models.Config) (*Repository, error) {
 		return nil, err
 	}
 	return &Repository{
-		UserRepository:         repositories.NewUserRepository(db),
-		WalletRepository:       repositories.NewWalletRepository(db),
-		TransactionRepository:  repositories.NewTransactionRepository(db),
-		SourceOfFundRepository: repositories.NewSourceOfFundRepo(db),
-		db:                     db,
+		UserRepository:           repositories.NewUserRepository(db),
+		WalletRepository:         repositories.NewWalletRepository(db),
+		TransactionRepository:    repositories.NewTransactionRepository(db),
+		SourceOfFundRepository:   repositories.NewSourceOfFundRepo(db),
+		GameRepository:           repositories.NewGameRepository(db),
+		ForgotPasswordRepository: repositories.NewForgotPasswordRepository(db),
+		BoxRepository:            repositories.NewBoxRepository(db),
+		db:                       db,
 	}, nil
 }
 
@@ -52,6 +58,7 @@ func (r *Repository) Automigrate() error {
 	return r.db.AutoMigrate(
 		&models.User{},
 		&models.Wallet{},
+		&models.ForgotPasswordToken{},
 		&models.Game{},
 		&models.Wallet{},
 		&models.SourceOfFund{},

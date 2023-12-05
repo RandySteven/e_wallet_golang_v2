@@ -18,6 +18,38 @@ type UserHandler struct {
 	usecase interfaces.UserUsecase
 }
 
+// ForgotPassword implements interfaces.UserHandler.
+func (handler *UserHandler) ForgotPassword(c *gin.Context) {
+	var (
+		requestId      = uuid.NewString()
+		ctx            = context.WithValue(c.Request.Context(), "request_id", requestId)
+		forgotPassword *req.ForgotPasswordRequest
+	)
+
+	if err := c.ShouldBind(&forgotPassword); err != nil {
+		c.Error(err)
+		return
+	}
+
+	forgotPasswordToken, err := handler.usecase.ForgotPassword(ctx, forgotPassword)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	resp := res.Response{
+		Message: "Forgot password token",
+		Data:    forgotPasswordToken,
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// ResetPassword implements interfaces.UserHandler.
+func (handler *UserHandler) ResetPassword(c *gin.Context) {
+	panic("unimplemented")
+}
+
 // GetUserById implements interfaces.UserHandler.
 func (handler *UserHandler) GetUserById(c *gin.Context) {
 	var (

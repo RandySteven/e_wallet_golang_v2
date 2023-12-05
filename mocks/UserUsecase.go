@@ -19,6 +19,29 @@ type UserUsecase struct {
 	mock.Mock
 }
 
+// ForgotPassword provides a mock function with given fields: ctx, forgot
+func (_m *UserUsecase) ForgotPassword(ctx context.Context, forgot *req.ForgotPasswordRequest) (*models.ForgotPasswordToken, error) {
+	ret := _m.Called(ctx, forgot)
+
+	var r0 *models.ForgotPasswordToken
+	if rf, ok := ret.Get(0).(func(context.Context, *req.ForgotPasswordRequest) *models.ForgotPasswordToken); ok {
+		r0 = rf(ctx, forgot)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.ForgotPasswordToken)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *req.ForgotPasswordRequest) error); ok {
+		r1 = rf(ctx, forgot)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetUserDetail provides a mock function with given fields: ctx, id
 func (_m *UserUsecase) GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error) {
 	ret := _m.Called(ctx, id)
