@@ -1,9 +1,12 @@
 package repositories
 
 import (
+	"assignment_4/entities"
 	"assignment_4/entities/models"
+	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"context"
+	"strconv"
 
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
@@ -12,6 +15,37 @@ import (
 
 type transactionRepository struct {
 	db *gorm.DB
+}
+
+// GetAllTransactions implements interfaces.TransactionRepository.
+func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query *entities.QueryCondition) ([]models.Transaction, error) {
+	var transactions []models.Transaction
+	limit, _ := strconv.Atoi(query.Limit)
+	// page, _ := strconv.Atoi(query.Page)
+	desc := false
+	if query.Sort == enums.Desc {
+		desc = true
+	}
+	sql := repo.db.WithContext(ctx).Model(&models.Transaction{}).
+		Preload("Receiver").
+		Preload("Sender")
+
+	if query.SortedBy != "" {
+		sql.Order(clause.OrderByColumn{
+			Column: clause.Column{Name: query.SortedBy},
+			Desc:   desc,
+		})
+	}
+
+	if limit != 0 {
+		sql.Limit(limit)
+	}
+	err := sql.Find(&transactions).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
 }
 
 // GetTransactionByUserId implements interfaces.TransactionRepository.

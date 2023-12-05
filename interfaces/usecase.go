@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"assignment_4/entities"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
@@ -18,5 +19,6 @@ type (
 		CreateTransferTransaction(ctx context.Context, transfer *req.TransferRequest) (*models.Transaction, error)
 		CreateTopupTransaction(ctx context.Context, topup *req.TopupRequest) (*models.Transaction, error)
 		GetUserHistoryTransactions(ctx context.Context, id uint) ([]models.Transaction, error)
+		GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error)
 	}
 )

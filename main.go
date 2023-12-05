@@ -21,7 +21,7 @@ func main() {
 	r := gin.Default()
 	r.ContextWithFallback = true
 	r.Use(middleware.LoggerMiddleware())
-	// r.Use(middleware.ErrorMiddleware())
+	r.Use(middleware.ErrorMiddleware())
 
 	handlers := InitHandlers()
 

@@ -27,5 +27,6 @@ func (h *Handlers) InitRouter(r *gin.RouterGroup) {
 	topupRouter.POST("", h.TransactionHandler.TopupTransaction)
 
 	transactionsRouter := r.Group("transactions")
-	transactionsRouter.GET("", h.TransactionHandler.GetAllHistoryUserTransactions)
+	transactionsRouter.GET("", h.TransactionHandler.GetAllTransactionsRecords)
+	transactionsRouter.GET("histories", h.TransactionHandler.GetAllHistoryUserTransactions)
 }

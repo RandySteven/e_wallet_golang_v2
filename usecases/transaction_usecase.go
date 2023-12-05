@@ -1,17 +1,36 @@
 package usecases
 
 import (
+	"assignment_4/apperror"
+	"assignment_4/entities"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
+	"assignment_4/entities/payload/res"
+	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"context"
-	"log"
+
+	"github.com/shopspring/decimal"
 )
 
 type transactionUsecase struct {
 	sourceFundRepo  interfaces.SourceOfFundRepository
 	walletRepo      interfaces.WalletRepository
 	transactionRepo interfaces.TransactionRepository
+}
+
+// GetAllTransactionsRecords implements interfaces.TransactionUsecase.
+func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error) {
+	transactions, err := usecase.transactionRepo.GetAllTransactions(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	transactionPage := &res.TransactionPaginationResponses{
+		Page:         query.Page,
+		Total:        uint(len(transactions)),
+		Transactions: transactions,
+	}
+	return transactionPage, nil
 }
 
 // GetUserHistoryTransactions implements interfaces.TransactionUsecase.
@@ -35,8 +54,13 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, err
 	}
 
-	log.Println(wallet)
-	log.Println(sourceFund)
+	if decimal.Min(topup.Amount, decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT)) == topup.Amount ||
+		decimal.Max(topup.Amount, decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)) == topup.Amount {
+		return nil, &apperror.ErrAmountLimit{
+			Min: decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT),
+			Max: decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT),
+		}
+	}
 
 	transaction := &models.Transaction{
 		SenderID:       wallet.ID,
@@ -64,6 +88,20 @@ func (usecase *transactionUsecase) CreateTransferTransaction(ctx context.Context
 	receiverWallet, err := usecase.walletRepo.GetByNumber(ctx, transfer.ReceiverWalletId)
 	if err != nil {
 		return nil, err
+	}
+
+	if senderWallet.ID == receiverWallet.ID {
+		return nil, &apperror.ErrSenderAndReceiverSame{
+			Message: "user can't transfer money to theirself",
+		}
+	}
+
+	if decimal.Min(transfer.Amount, decimal.NewFromInt(enums.MIN_TRANSFER_AMOUNT)) == transfer.Amount ||
+		decimal.Max(transfer.Amount, decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT)) == transfer.Amount {
+		return nil, &apperror.ErrAmountLimit{
+			Min: decimal.NewFromInt(enums.MIN_TRANSFER_AMOUNT),
+			Max: decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT),
+		}
 	}
 
 	transaction := &models.Transaction{

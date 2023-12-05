@@ -6,6 +6,9 @@ SELECT * FROM users;
 SELECT * FROM wallets;
 SELECT * FROM transactions;
 
+UPDATE wallets
+SET balance = 50000.00;
+
 SELECT * FROM source_of_funds;
 
 INSERT INTO source_of_funds (source)

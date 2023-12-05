@@ -27,11 +27,13 @@ func (handler *UserHandler) GetUserById(c *gin.Context) {
 	paramId := c.Param("id")
 	id, err := strconv.Atoi(paramId)
 	if err != nil {
+		c.Error(err)
 		return
 	}
 
 	userDetail, err := handler.usecase.GetUserDetail(ctx, uint(id))
 	if err != nil {
+		c.Error(err)
 		return
 	}
 
@@ -51,10 +53,12 @@ func (handler *UserHandler) LoginUser(c *gin.Context) {
 		login     *req.UserLoginRequest
 	)
 	if err := c.ShouldBind(&login); err != nil {
+		c.Error(err)
 		return
 	}
 	userRes, err := handler.usecase.LoginUser(ctx, login)
 	if err != nil {
+		c.Error(err)
 		return
 	}
 	resp := &res.Response{
@@ -74,13 +78,13 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 	)
 
 	if err := c.ShouldBind(&register); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.Error(err)
 		return
 	}
 
 	pass, err := utils.HashPassword(register.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.Error(err)
 		return
 	}
 	user := &models.User{

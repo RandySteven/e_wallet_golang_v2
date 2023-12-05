@@ -1,6 +1,10 @@
 package apperror
 
-import "github.com/shopspring/decimal"
+import (
+	"fmt"
+
+	"github.com/shopspring/decimal"
+)
 
 type ErrWalletNumberInvalid struct {
 	Message string
@@ -26,7 +30,25 @@ type ErrAmountLimit struct {
 }
 
 type ErrLengthValidation struct {
-	Length  uint
+	MinLength uint
+	MaxLength uint
+	Field     string
+	Err       error
+}
+
+type ErrSenderAndReceiverSame struct {
 	Message string
 	Err     error
+}
+
+func (e *ErrSenderAndReceiverSame) Error() string {
+	return e.Message
+}
+
+func (e *ErrAmountLimit) Error() string {
+	return fmt.Sprintf("Amount must between %v and %v", e.Min, e.Max)
+}
+
+func (e *ErrLengthValidation) Error() string {
+	return fmt.Sprintf("%s length must less than ", e.Field, e.MaxLength)
 }

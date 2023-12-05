@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"assignment_4/entities"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
 	"assignment_4/interfaces"
@@ -16,6 +17,39 @@ type TransactionHandler struct {
 	uscase interfaces.TransactionUsecase
 }
 
+// GetAllTransactionsRecords implements interfaces.TransactionHandler.
+func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
+	var (
+		requestId = uuid.NewString()
+		ctx       = context.WithValue(c.Request.Context(), "requestId", requestId)
+	)
+
+	sortBy := c.Query("sortBy")
+	sort := c.DefaultQuery("sort", "asc")
+	limit := c.DefaultQuery("limit", "25")
+	page := c.DefaultQuery("page", "1")
+
+	queryCondition := &entities.QueryCondition{
+		SortedBy: sortBy,
+		Sort:     sort,
+		Limit:    limit,
+		Page:     page,
+	}
+
+	transactions, err := handler.uscase.GetAllTransactionsRecords(ctx, queryCondition)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	resp := res.Response{
+		Message: "Get all transactions",
+		Data:    transactions,
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
 // GetAllHistoryUserTransactions implements interfaces.TransactionHandler.
 func (handler *TransactionHandler) GetAllHistoryUserTransactions(c *gin.Context) {
 	var (
@@ -28,6 +62,7 @@ func (handler *TransactionHandler) GetAllHistoryUserTransactions(c *gin.Context)
 
 	transactions, err := handler.uscase.GetUserHistoryTransactions(ctx, userId)
 	if err != nil {
+		c.Error(err)
 		return
 	}
 
@@ -46,7 +81,8 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 		request   *req.TopupRequest
 	)
 	if err := c.ShouldBind(&request); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		c.Error(err)
+		return
 	}
 
 	getUserId, _ := c.Get("x-user-id")
@@ -56,7 +92,8 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 	log.Println(request)
 	transaction, err := handler.uscase.CreateTopupTransaction(ctx, request)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		c.Error(err)
+		return
 	}
 
 	resp := res.Response{
@@ -75,7 +112,8 @@ func (handler *TransactionHandler) TransferTransaction(c *gin.Context) {
 		request   *req.TransferRequest
 	)
 	if err := c.ShouldBind(&request); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		c.Error(err)
+		return
 	}
 
 	getUserId, _ := c.Get("x-user-id")
@@ -84,7 +122,8 @@ func (handler *TransactionHandler) TransferTransaction(c *gin.Context) {
 
 	transaction, err := handler.uscase.CreateTransferTransaction(ctx, request)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		c.Error(err)
+		return
 	}
 
 	resp := res.Response{
