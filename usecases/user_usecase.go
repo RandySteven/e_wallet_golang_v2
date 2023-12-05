@@ -27,7 +27,6 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 	}
 	isPassValid := utils.IsPasswordValid(user.Password, login.Password)
 	if !isPassValid {
-		log.Println("password gak valid bleh :p")
 		return nil, err
 	}
 	expTime := time.Now().Add(time.Minute * 15)
@@ -45,7 +44,6 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 	log.Println(string(auth.JWT_KEY))
 	if err != nil {
 		log.Println(err.Error())
-		log.Println("jwt claim gak valid bleh :p")
 		return nil, err
 	}
 	userResp := res.UserLoginResponse{

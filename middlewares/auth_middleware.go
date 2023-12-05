@@ -4,7 +4,6 @@ import (
 	"assignment_4/auth"
 	"assignment_4/entities/payload/res"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -12,7 +11,7 @@ import (
 
 func validateToken(c *gin.Context) *auth.JWTClaim {
 	tokenAuthorization := c.GetHeader("Authorization")
-	tokenStr := strings.Trim(tokenAuthorization, "Bearer ")
+	tokenStr := tokenAuthorization[len("Bearer "):]
 	claims := &auth.JWTClaim{}
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(j *jwt.Token) (interface{}, error) {
 		return auth.JWT_KEY, nil
@@ -32,6 +31,7 @@ func AuthMiddleware(c *gin.Context) {
 			},
 		}
 		c.AbortWithStatusJSON(http.StatusUnauthorized, resp)
+		return
 	}
 
 	c.Set("x-user-id", claims.ID)

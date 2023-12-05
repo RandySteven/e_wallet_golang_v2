@@ -3,6 +3,7 @@ package handlers
 import (
 	"assignment_4/entities/payload/req"
 	"assignment_4/interfaces"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,7 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 		return
 	}
 
+	c.JSON(http.StatusOK, "OK")
 }
 
 // TransferTransaction implements interfaces.TransactionHandler.
