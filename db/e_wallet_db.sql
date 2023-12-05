@@ -7,6 +7,7 @@ SELECT * FROM wallets;
 SELECT * FROM transactions;
 SELECT * FROM boxes;
 
+SELECT * FROM forgot_password_tokens;
 UPDATE wallets
 SET balance = 50000.00;
 

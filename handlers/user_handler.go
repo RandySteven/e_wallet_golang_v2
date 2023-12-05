@@ -47,7 +47,30 @@ func (handler *UserHandler) ForgotPassword(c *gin.Context) {
 
 // ResetPassword implements interfaces.UserHandler.
 func (handler *UserHandler) ResetPassword(c *gin.Context) {
-	panic("unimplemented")
+	var (
+		requestId   = uuid.NewString()
+		ctx         = context.WithValue(c.Request.Context(), "request_id", requestId)
+		newPassword *req.PasswordResetRequest
+	)
+
+	if err := c.ShouldBind(&newPassword); err != nil {
+		c.Error(err)
+		return
+	}
+
+	newPassword.Token = c.Query("token")
+
+	_, err := handler.usecase.ResetPassword(ctx, newPassword)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	resp := res.Response{
+		Message: "Forgot password token",
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 // GetUserById implements interfaces.UserHandler.

@@ -17,5 +17,5 @@ type ForgotPasswordToken struct {
 	UpdatedAt time.Time `gorm:"not null;default:current_timestamp"`
 	DeletedAt gorm.DeletedAt
 
-	User User `gorm:"foreignKey:UserID;references:User"`
+	User User `gorm:"foreignKey:UserID;references:ID"`
 }

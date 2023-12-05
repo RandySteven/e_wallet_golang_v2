@@ -21,6 +21,9 @@ func ErrorMiddleware() gin.HandlerFunc {
 		errDataNotFound          *apperror.ErrDataNotFound
 		errWalletInvalid         *apperror.ErrWalletInvalid
 		errInvalidRequest        *apperror.ErrInvalidRequest
+		errTokenAlreadyUsed      *apperror.ErrTokenAlreadyUsed
+		errTokenExpired          *apperror.ErrTokenExpired
+		errTokenInvalid          *apperror.ErrTokenInvalid
 	)
 
 	return func(c *gin.Context) {
@@ -46,6 +49,15 @@ func ErrorMiddleware() gin.HandlerFunc {
 				resp.Errors = append(resp.Errors, ginErr.Err.Error())
 				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			case errors.As(ginErr.Err, &errInvalidRequest):
+				resp.Errors = append(resp.Errors, ginErr.Err.Error())
+				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
+			case errors.As(ginErr.Err, &errTokenAlreadyUsed):
+				resp.Errors = append(resp.Errors, ginErr.Err.Error())
+				c.AbortWithStatusJSON(http.StatusForbidden, resp)
+			case errors.As(ginErr.Err, &errTokenExpired):
+				resp.Errors = append(resp.Errors, ginErr.Err.Error())
+				c.AbortWithStatusJSON(http.StatusForbidden, resp)
+			case errors.As(ginErr.Err, &errTokenInvalid):
 				resp.Errors = append(resp.Errors, ginErr.Err.Error())
 				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			// case errors.As(ginErr.Err, &errLengthValidation):

@@ -14,6 +14,44 @@ type forgotPasswordRepository struct {
 	db *gorm.DB
 }
 
+// UpdateUserPassword implements interfaces.ForgotPasswordRepository.
+func (repo *forgotPasswordRepository) UpdateUserPassword(ctx context.Context, token *models.ForgotPasswordToken, password string) (*models.User, error) {
+	var user *models.User
+	err := repo.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Model(&models.ForgotPasswordToken{}).
+			Where("id = ?", token.ID).
+			Update("is_valid", false).Error
+		if err != nil {
+			return err
+		}
+
+		user, err := utils.GetById[models.User](ctx, repo.db, token.UserID)
+		if err != nil {
+			return err
+		}
+
+		user.Password = password
+		user, err = utils.SaveQuery[models.User](ctx, repo.db, user, enums.Update)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return user, err
+}
+
+// GetPasswordTokenByToken implements interfaces.ForgotPasswordRepository.
+func (repo *forgotPasswordRepository) GetPasswordTokenByToken(ctx context.Context, resetToken string) (*models.ForgotPasswordToken, error) {
+	var token *models.ForgotPasswordToken
+	err := repo.db.WithContext(ctx).Where("reset_token = ?", resetToken).Find(&token).Error
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
+}
+
 // BeginTrx implements interfaces.ForgotPasswordRepository.
 func (repo *forgotPasswordRepository) BeginTrx(ctx context.Context) interfaces.ForgotPasswordRepository {
 	panic("unimplemented")

@@ -23,6 +23,8 @@ type (
 
 	ForgotPasswordRepository interface {
 		Repository[models.ForgotPasswordToken, ForgotPasswordRepository]
+		GetPasswordTokenByToken(ctx context.Context, token string) (*models.ForgotPasswordToken, error)
+		UpdateUserPassword(ctx context.Context, token *models.ForgotPasswordToken, password string) (*models.User, error)
 	}
 
 	WalletRepository interface {

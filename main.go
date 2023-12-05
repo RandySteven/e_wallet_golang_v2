@@ -29,6 +29,7 @@ func main() {
 	v1.POST("/register", handlers.UserHandler.RegisterUser)
 	v1.POST("/login", handlers.UserHandler.LoginUser)
 	v1.POST("/forgot-password", handlers.UserHandler.ForgotPassword)
+	v1.POST("/reset-password", handlers.UserHandler.ResetPassword)
 
 	handlers.InitRouter(v1)
 

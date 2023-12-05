@@ -22,11 +22,43 @@ type userUsecase struct {
 	forgotPassRepo interfaces.ForgotPasswordRepository
 }
 
+// ResetPassword implements interfaces.UserUsecase.
+func (usecase *userUsecase) ResetPassword(ctx context.Context, reset *req.PasswordResetRequest) (*models.User, error) {
+	token, err := usecase.forgotPassRepo.GetPasswordTokenByToken(ctx, reset.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	if token == nil {
+		return nil, &apperror.ErrTokenInvalid{}
+	}
+
+	if !token.IsValid {
+		return nil, &apperror.ErrTokenAlreadyUsed{}
+	}
+
+	if time.Now().After(token.TokenExpiry) {
+		return nil, &apperror.ErrTokenExpired{}
+	}
+
+	pass, err := utils.HashPassword(reset.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := usecase.forgotPassRepo.UpdateUserPassword(ctx, token, pass)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 // ForgotPassword implements interfaces.UserUsecase.
 func (usecase *userUsecase) ForgotPassword(ctx context.Context, forgot *req.ForgotPasswordRequest) (*models.ForgotPasswordToken, error) {
 	user, err := usecase.userRepo.GetByEmail(ctx, forgot.Email)
 	if err != nil || user == nil {
-		return nil, &apperror.ErrDataNotFound{Data: "user"}
+		return nil, &apperror.ErrInvalidRequest{Field: "user"}
 	}
 
 	currentTime := time.Now()

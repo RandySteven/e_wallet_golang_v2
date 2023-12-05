@@ -63,6 +63,18 @@ type ErrZeroChance struct {
 	Err error
 }
 
+type ErrTokenExpired struct {
+	Err error
+}
+
+type ErrTokenInvalid struct {
+	Err error
+}
+
+type ErrTokenAlreadyUsed struct {
+	Err error
+}
+
 func (e *ErrSenderAndReceiverSame) Error() string {
 	return e.Message
 }
@@ -93,4 +105,16 @@ func (e *ErrInvalidRequest) Error() string {
 
 func (e *ErrZeroChance) Error() string {
 	return "the chance user has is 0"
+}
+
+func (e *ErrTokenExpired) Error() string {
+	return "token already expired"
+}
+
+func (e *ErrTokenAlreadyUsed) Error() string {
+	return "token is already used"
+}
+
+func (e *ErrTokenInvalid) Error() string {
+	return "token is invalid"
 }

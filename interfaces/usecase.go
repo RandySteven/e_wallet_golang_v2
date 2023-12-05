@@ -14,6 +14,7 @@ type (
 		LoginUser(ctx context.Context, login *req.UserLoginRequest) (*res.UserLoginResponse, error)
 		GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error)
 		ForgotPassword(ctx context.Context, forgot *req.ForgotPasswordRequest) (*models.ForgotPasswordToken, error)
+		ResetPassword(ctx context.Context, reset *req.PasswordResetRequest) (*models.User, error)
 	}
 
 	TransactionUsecase interface {
