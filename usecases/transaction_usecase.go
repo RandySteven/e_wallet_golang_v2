@@ -50,6 +50,10 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, err
 	}
 
+	if topup.SourceOfFund != enums.Reward {
+		return nil, &apperror.ErrInvalidRequest{Field: "source of funds"}
+	}
+
 	sourceFund, err := usecase.sourceFundRepo.GetSourceOfFundBySource(ctx, topup.SourceOfFund)
 	if err != nil {
 		return nil, err
