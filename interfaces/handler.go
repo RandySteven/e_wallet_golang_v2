@@ -7,4 +7,9 @@ type (
 		RegisterUser(c *gin.Context)
 		LoginUser(c *gin.Context)
 	}
+
+	TransactionHandler interface {
+		TopupTransaction(c *gin.Context)
+		TransferTransaction(c *gin.Context)
+	}
 )

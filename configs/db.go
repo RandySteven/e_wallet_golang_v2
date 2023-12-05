@@ -13,9 +13,11 @@ import (
 )
 
 type Repository struct {
-	UserRepository   interfaces.UserRepository
-	WalletRepository interfaces.WalletRepository
-	db               *gorm.DB
+	UserRepository         interfaces.UserRepository
+	WalletRepository       interfaces.WalletRepository
+	TransactionRepository  interfaces.TransactionRepository
+	SourceOfFundRepository interfaces.SourceOfFundRepository
+	db                     *gorm.DB
 }
 
 func NewRepository(config *models.Config) (*Repository, error) {
@@ -35,9 +37,11 @@ func NewRepository(config *models.Config) (*Repository, error) {
 		return nil, err
 	}
 	return &Repository{
-		UserRepository:   repositories.NewUserRepository(db),
-		WalletRepository: repositories.NewWalletRepository(db),
-		db:               db,
+		UserRepository:         repositories.NewUserRepository(db),
+		WalletRepository:       repositories.NewWalletRepository(db),
+		TransactionRepository:  repositories.NewTransactionRepository(db),
+		SourceOfFundRepository: repositories.NewSourceOfFundRepo(db),
+		db:                     db,
 	}, nil
 }
 

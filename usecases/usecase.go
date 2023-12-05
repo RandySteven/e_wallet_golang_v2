@@ -7,10 +7,12 @@ import (
 
 type Usecase struct {
 	interfaces.UserUsecase
+	interfaces.TransactionUsecase
 }
 
 func NewUsecase(repo configs.Repository) *Usecase {
 	return &Usecase{
-		UserUsecase: NewUserUsecase(repo.UserRepository, repo.WalletRepository),
+		UserUsecase:        NewUserUsecase(repo.UserRepository, repo.WalletRepository),
+		TransactionUsecase: NewTransactionUsecase(repo.SourceOfFundRepository, repo.WalletRepository),
 	}
 }

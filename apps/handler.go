@@ -9,7 +9,8 @@ import (
 
 type (
 	Handlers struct {
-		UserHandler interfaces.UserHandler
+		UserHandler        interfaces.UserHandler
+		TransactionHandler interfaces.TransactionHandler
 	}
 )
 
@@ -18,6 +19,7 @@ func NewHandlers(repo configs.Repository) (*Handlers, error) {
 	usecase := usecases.NewUsecase(repo)
 
 	return &Handlers{
-		UserHandler: handlers.NewUserHandler(usecase.UserUsecase),
+		UserHandler:        handlers.NewUserHandler(usecase.UserUsecase),
+		TransactionHandler: handlers.NewTransactionHandler(usecase.TransactionUsecase),
 	}, nil
 }

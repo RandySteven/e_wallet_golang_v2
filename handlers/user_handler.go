@@ -18,8 +18,24 @@ type UserHandler struct {
 }
 
 // LoginUser implements interfaces.UserHandler.
-func (*UserHandler) LoginUser(c *gin.Context) {
-	panic("unimplemented")
+func (handler *UserHandler) LoginUser(c *gin.Context) {
+	var (
+		requestId = uuid.NewString()
+		ctx       = context.WithValue(c.Request.Context(), "request_id", requestId)
+		login     *req.UserLoginRequest
+	)
+	if err := c.ShouldBind(&login); err != nil {
+		return
+	}
+	userRes, err := handler.usecase.LoginUser(ctx, login)
+	if err != nil {
+		return
+	}
+	resp := &res.Response{
+		Message: "Success to login user",
+		Data:    userRes,
+	}
+	c.JSON(http.StatusOK, resp)
 }
 
 // RegisterUser implements interfaces.UserHandler.
@@ -32,11 +48,13 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 	)
 
 	if err := c.ShouldBind(&register); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	pass, err := utils.HashPassword(register.Password)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	user := &models.User{

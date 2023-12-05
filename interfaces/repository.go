@@ -22,9 +22,17 @@ type (
 
 	WalletRepository interface {
 		Repository[models.Wallet, WalletRepository]
+		GetByNumber(ctx context.Context, number string) (*models.Wallet, error)
+		GetByUserId(ctx context.Context, id uint) (*models.Wallet, error)
 	}
 
 	TransactionRepository interface {
 		Repository[models.Transaction, TransactionRepository]
+		CreateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
+	}
+
+	SourceOfFundRepository interface {
+		Repository[models.SourceOfFund, SourceOfFundRepository]
+		GetSourceOfFundBySource(ctx context.Context, source string) (*models.SourceOfFund, error)
 	}
 )
