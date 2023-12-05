@@ -4,6 +4,7 @@ CREATE DATABASE e_wallet_db;
 
 SELECT * FROM users;
 SELECT * FROM wallets;
+SELECT * FROM transactions;
 
 SELECT * FROM source_of_funds;
 
@@ -12,4 +13,5 @@ VALUES
     ('Bank Transfer'),
     ('Credit Card'),
     ('Cash'),
-    ('Reward');
+    ('Reward'),
+    ('Other');

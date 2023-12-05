@@ -36,7 +36,7 @@ func (repo *sourceOfFundRepo) GetById(ctx context.Context, id uint) (*models.Sou
 func (repo *sourceOfFundRepo) GetSourceOfFundBySource(ctx context.Context, source string) (*models.SourceOfFund, error) {
 	var sourceFund *models.SourceOfFund
 	err := repo.db.WithContext(ctx).Model(&models.SourceOfFund{}).
-		Where("source = ", source).
+		Where("source = ?", source).
 		Scan(&sourceFund).
 		Error
 	if err != nil {

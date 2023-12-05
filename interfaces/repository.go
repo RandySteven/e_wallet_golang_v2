@@ -28,7 +28,8 @@ type (
 
 	TransactionRepository interface {
 		Repository[models.Transaction, TransactionRepository]
-		CreateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
+		CreateTopupTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
+		CreateTransferTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 	}
 
 	SourceOfFundRepository interface {

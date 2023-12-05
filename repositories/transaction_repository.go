@@ -5,7 +5,9 @@ import (
 	"assignment_4/interfaces"
 	"context"
 
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type transactionRepository struct {
@@ -22,13 +24,86 @@ func (repo *transactionRepository) CommitOrRollback(ctx context.Context) {
 	panic("unimplemented")
 }
 
+// CreateTransferTransaction implements interfaces.TransactionRepository.
+func (repo *transactionRepository) CreateTransferTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error) {
+	err := repo.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var (
+			receiverWallet *models.Wallet
+			senderWallet   *models.Wallet
+		)
+
+		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Model(&models.Wallet{}).
+			Where("id = ?", transaction.SenderID).
+			Scan(&senderWallet).Error
+		if err != nil || senderWallet == nil {
+			return err
+		}
+
+		err = tx.Clauses(clause.Locking{Strength: "UPDATE"}).Model(&models.Wallet{}).
+			Where("id = ?", transaction.ReceiverID).
+			Scan(&receiverWallet).Error
+		if err != nil || receiverWallet == nil {
+			return err
+		}
+
+		senderWallet.Balance = senderWallet.Balance.Sub(transaction.Amount)
+		receiverWallet.Balance = decimal.Sum(receiverWallet.Balance, transaction.Amount)
+
+		err = tx.Table("wallets").
+			Where("id = ?", senderWallet.ID).
+			Update("balance", senderWallet.Balance).
+			Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Table("wallets").
+			Where("id = ?", receiverWallet.ID).
+			Update("balance", receiverWallet.Balance).
+			Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Create(&transaction).Error
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return transaction, err
+}
+
 // CreateTransaction implements interfaces.TransactionRepository.
-func (repo *transactionRepository) CreateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error) {
-	// err := repo.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+func (repo *transactionRepository) CreateTopupTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error) {
+	err := repo.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 
-	// })
+		var wallet *models.Wallet
 
-	return nil, nil
+		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Model(&models.Wallet{}).
+			Where("id = ?", transaction.ReceiverID).
+			Scan(&wallet).Error
+		if err != nil || wallet == nil {
+			return err
+		}
+
+		wallet.Balance = decimal.Sum(wallet.Balance, transaction.Amount)
+		err = tx.Table("wallets").
+			Where("id = ?", wallet.ID).
+			Update("balance", wallet.Balance).Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Create(&transaction).Error
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return transaction, err
 }
 
 // FindAll implements interfaces.TransactionRepository.
