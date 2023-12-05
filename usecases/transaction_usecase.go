@@ -17,6 +17,7 @@ type transactionUsecase struct {
 	sourceFundRepo  interfaces.SourceOfFundRepository
 	walletRepo      interfaces.WalletRepository
 	transactionRepo interfaces.TransactionRepository
+	userRepo        interfaces.UserRepository
 }
 
 // GetAllTransactionsRecords implements interfaces.TransactionUsecase.
@@ -54,8 +55,12 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, err
 	}
 
-	if decimal.Min(topup.Amount, decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT)) == topup.Amount ||
-		decimal.Max(topup.Amount, decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)) == topup.Amount {
+	if sourceFund == nil {
+		return nil, &apperror.ErrInvalidRequest{Field: "source of funds"}
+	}
+
+	if decimal.Min(topup.Amount, decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT-1)) == topup.Amount ||
+		decimal.Max(topup.Amount, decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT+1)) == topup.Amount {
 		return nil, &apperror.ErrAmountLimit{
 			Min: decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT),
 			Max: decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT),
@@ -74,6 +79,18 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 	if err != nil {
 		return nil, err
 	}
+
+	user, err := usecase.userRepo.GetById(ctx, topup.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Chance += 1
+	_, err = usecase.userRepo.Update(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+
 	return transaction, nil
 }
 
@@ -83,6 +100,10 @@ func (usecase *transactionUsecase) CreateTransferTransaction(ctx context.Context
 	senderWallet, err := usecase.walletRepo.GetByUserId(ctx, transfer.SenderUserId)
 	if err != nil {
 		return nil, err
+	}
+
+	if senderWallet.Balance.Cmp(transfer.Amount) == -1 {
+		return nil, &apperror.ErrBalanceNotEnough{}
 	}
 
 	receiverWallet, err := usecase.walletRepo.GetByNumber(ctx, transfer.ReceiverWalletId)
@@ -100,8 +121,8 @@ func (usecase *transactionUsecase) CreateTransferTransaction(ctx context.Context
 		}
 	}
 
-	if decimal.Min(transfer.Amount, decimal.NewFromInt(enums.MIN_TRANSFER_AMOUNT)) == transfer.Amount ||
-		decimal.Max(transfer.Amount, decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT)) == transfer.Amount {
+	if decimal.Min(transfer.Amount, decimal.NewFromInt(enums.MIN_TRANSFER_AMOUNT-1)) == transfer.Amount ||
+		decimal.Max(transfer.Amount, decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT+1)) == transfer.Amount {
 		return nil, &apperror.ErrAmountLimit{
 			Min: decimal.NewFromInt(enums.MIN_TRANSFER_AMOUNT),
 			Max: decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT),
@@ -127,11 +148,13 @@ func NewTransactionUsecase(
 	sourceFundRepo interfaces.SourceOfFundRepository,
 	walletRepo interfaces.WalletRepository,
 	transactionRepo interfaces.TransactionRepository,
+	userRepo interfaces.UserRepository,
 ) *transactionUsecase {
 	return &transactionUsecase{
 		sourceFundRepo:  sourceFundRepo,
 		walletRepo:      walletRepo,
 		transactionRepo: transactionRepo,
+		userRepo:        userRepo,
 	}
 }
 

@@ -11,6 +11,11 @@ type ErrWalletNumberInvalid struct {
 	Err     error
 }
 
+type ErrInvalidRequest struct {
+	Field string
+	Err   error
+}
+
 type ErrAmountInvalid struct {
 	Message string
 	Err     error
@@ -50,6 +55,14 @@ type ErrWalletInvalid struct {
 	Err error
 }
 
+type ErrBalanceNotEnough struct {
+	Err error
+}
+
+type ErrZeroChance struct {
+	Err error
+}
+
 func (e *ErrSenderAndReceiverSame) Error() string {
 	return e.Message
 }
@@ -68,4 +81,16 @@ func (e *ErrDataNotFound) Error() string {
 
 func (e *ErrWalletInvalid) Error() string {
 	return "wallet is invalid"
+}
+
+func (e *ErrBalanceNotEnough) Error() string {
+	return "user don't have enough balance"
+}
+
+func (e *ErrInvalidRequest) Error() string {
+	return fmt.Sprintf("%s invalid request", e.Field)
+}
+
+func (e *ErrZeroChance) Error() string {
+	return "the chance user has is 0"
 }

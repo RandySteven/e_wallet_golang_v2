@@ -37,6 +37,7 @@ func (usecase *userUsecase) GetUserDetail(ctx context.Context, id uint) (*res.Us
 		Email:        user.Email,
 		WalletNumber: wallet.Number,
 		Balance:      wallet.Balance,
+		Chance:       user.Chance,
 	}
 
 	return userDetail, nil

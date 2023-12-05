@@ -22,5 +22,7 @@ type (
 		GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error)
 	}
 
-	GameUsecase interface{}
+	GameUsecase interface {
+		PlayGame(ctx context.Context, game *models.Game) (*models.Game, error)
+	}
 )

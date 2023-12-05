@@ -20,4 +20,5 @@ type UserDetail struct {
 	Email        string          `json:"email"`
 	WalletNumber string          `json:"wallet_number"`
 	Balance      decimal.Decimal `json:"balance"`
+	Chance       uint            `json:"chance"`
 }

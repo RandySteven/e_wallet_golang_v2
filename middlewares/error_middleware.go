@@ -16,9 +16,11 @@ func ErrorMiddleware() gin.HandlerFunc {
 		// errFieldIsRequired       *apperror.ErrFieldIsRequired
 		errAmountLimit *apperror.ErrAmountLimit
 		// errLengthValidation      *apperror.ErrLengthValidation
+		errBalanceNotEnough      *apperror.ErrBalanceNotEnough
 		errSenderAndReceiverSame *apperror.ErrSenderAndReceiverSame
 		errDataNotFound          *apperror.ErrDataNotFound
 		errWalletInvalid         *apperror.ErrWalletInvalid
+		errInvalidRequest        *apperror.ErrInvalidRequest
 	)
 
 	return func(c *gin.Context) {
@@ -40,6 +42,12 @@ func ErrorMiddleware() gin.HandlerFunc {
 			case errors.As(ginErr.Err, &errDataNotFound):
 				resp.Errors = append(resp.Errors, ginErr.Err.Error())
 				c.AbortWithStatusJSON(http.StatusNotFound, resp)
+			case errors.As(ginErr.Err, &errBalanceNotEnough):
+				resp.Errors = append(resp.Errors, ginErr.Err.Error())
+				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
+			case errors.As(ginErr.Err, &errInvalidRequest):
+				resp.Errors = append(resp.Errors, ginErr.Err.Error())
+				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			// case errors.As(ginErr.Err, &errLengthValidation):
 			// 	resp.Errors = append(resp.Errors, ginErr.Err.Error())
 			// 	c.AbortWithStatusJSON(http.StatusBadRequest, resp)

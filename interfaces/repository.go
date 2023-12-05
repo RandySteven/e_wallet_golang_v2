@@ -46,5 +46,6 @@ type (
 
 	BoxRepository interface {
 		Repository[models.Box, BoxRepository]
+		GetNineRandomBoxes(ctx context.Context) ([]models.Box, error)
 	}
 )

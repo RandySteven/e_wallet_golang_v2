@@ -14,6 +14,16 @@ type boxRepository struct {
 	db *gorm.DB
 }
 
+// GetNineRandomBoxes implements interfaces.BoxRepository.
+func (repo *boxRepository) GetNineRandomBoxes(ctx context.Context) ([]models.Box, error) {
+	var boxes []models.Box
+	err := repo.db.WithContext(ctx).Order("random()").Limit(9).Find(&boxes).Error
+	if err != nil {
+		return nil, err
+	}
+	return boxes, nil
+}
+
 // BeginTrx implements interfaces.BoxRepository.
 func (repo *boxRepository) BeginTrx(ctx context.Context) interfaces.BoxRepository {
 	panic("unimplemented")
