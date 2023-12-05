@@ -83,6 +83,29 @@ func (_m *ForgotPasswordRepository) GetById(ctx context.Context, id uint) (*mode
 	return r0, r1
 }
 
+// GetPasswordTokenByToken provides a mock function with given fields: ctx, token
+func (_m *ForgotPasswordRepository) GetPasswordTokenByToken(ctx context.Context, token string) (*models.ForgotPasswordToken, error) {
+	ret := _m.Called(ctx, token)
+
+	var r0 *models.ForgotPasswordToken
+	if rf, ok := ret.Get(0).(func(context.Context, string) *models.ForgotPasswordToken); ok {
+		r0 = rf(ctx, token)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.ForgotPasswordToken)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, token)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Save provides a mock function with given fields: ctx, entity
 func (_m *ForgotPasswordRepository) Save(ctx context.Context, entity *models.ForgotPasswordToken) (*models.ForgotPasswordToken, error) {
 	ret := _m.Called(ctx, entity)
@@ -122,6 +145,29 @@ func (_m *ForgotPasswordRepository) Update(ctx context.Context, entity *models.F
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *models.ForgotPasswordToken) error); ok {
 		r1 = rf(ctx, entity)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateUserPassword provides a mock function with given fields: ctx, token, password
+func (_m *ForgotPasswordRepository) UpdateUserPassword(ctx context.Context, token *models.ForgotPasswordToken, password string) (*models.User, error) {
+	ret := _m.Called(ctx, token, password)
+
+	var r0 *models.User
+	if rf, ok := ret.Get(0).(func(context.Context, *models.ForgotPasswordToken, string) *models.User); ok {
+		r0 = rf(ctx, token, password)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.ForgotPasswordToken, string) error); ok {
+		r1 = rf(ctx, token, password)
 	} else {
 		r1 = ret.Error(1)
 	}

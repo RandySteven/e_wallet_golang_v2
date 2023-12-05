@@ -111,6 +111,29 @@ func (_m *UserUsecase) RegisterUser(ctx context.Context, user *models.User) (*mo
 	return r0, r1
 }
 
+// ResetPassword provides a mock function with given fields: ctx, reset
+func (_m *UserUsecase) ResetPassword(ctx context.Context, reset *req.PasswordResetRequest) (*models.User, error) {
+	ret := _m.Called(ctx, reset)
+
+	var r0 *models.User
+	if rf, ok := ret.Get(0).(func(context.Context, *req.PasswordResetRequest) *models.User); ok {
+		r0 = rf(ctx, reset)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *req.PasswordResetRequest) error); ok {
+		r1 = rf(ctx, reset)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 type mockConstructorTestingTNewUserUsecase interface {
 	mock.TestingT
 	Cleanup(func())

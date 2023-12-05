@@ -31,7 +31,7 @@ func (repo *forgotPasswordRepository) UpdateUserPassword(ctx context.Context, to
 		}
 
 		user.Password = password
-		user, err = utils.SaveQuery[models.User](ctx, repo.db, user, enums.Update)
+		_, err = utils.SaveQuery[models.User](ctx, repo.db, user, enums.Update)
 		if err != nil {
 			return err
 		}
