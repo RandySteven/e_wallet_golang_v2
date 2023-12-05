@@ -21,4 +21,6 @@ type (
 		GetUserHistoryTransactions(ctx context.Context, id uint) ([]models.Transaction, error)
 		GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error)
 	}
+
+	GameUsecase interface{}
 )

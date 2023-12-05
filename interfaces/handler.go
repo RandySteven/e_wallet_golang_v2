@@ -15,4 +15,9 @@ type (
 		GetAllHistoryUserTransactions(c *gin.Context)
 		GetAllTransactionsRecords(c *gin.Context)
 	}
+
+	GameHandler interface {
+		PlayGame(c *gin.Context)
+		ChooseBox(c *gin.Context)
+	}
 )

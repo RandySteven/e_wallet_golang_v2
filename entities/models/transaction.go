@@ -18,7 +18,7 @@ type Transaction struct {
 	UpdatedAt      time.Time       `gorm:"not null;default:current_timestamp"`
 	DeletdAt       gorm.DeletedAt
 
-	Sender       Wallet       `gorm:"foreignKey:SenderID;references:ID"`
-	Receiver     Wallet       `gorm:"foreignKey:ReceiverID;references:ID"`
-	SourceOfFund SourceOfFund `gorm:"foreignKey:SourceOfFundID;references:ID"`
+	Sender       *Wallet       `gorm:"foreignKey:SenderID;references:ID"`
+	Receiver     *Wallet       `gorm:"foreignKey:ReceiverID;references:ID"`
+	SourceOfFund *SourceOfFund `gorm:"foreignKey:SourceOfFundID;references:ID"`
 }

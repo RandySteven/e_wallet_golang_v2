@@ -52,6 +52,8 @@ func (r *Repository) Automigrate() error {
 	return r.db.AutoMigrate(
 		&models.User{},
 		&models.Wallet{},
+		&models.Game{},
+		&models.Wallet{},
 		&models.SourceOfFund{},
 		&models.Transaction{},
 	)

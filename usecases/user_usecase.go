@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"assignment_4/apperror"
 	"assignment_4/auth"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
@@ -22,8 +23,8 @@ type userUsecase struct {
 // GetUserDetail implements interfaces.UserUsecase.
 func (usecase *userUsecase) GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error) {
 	user, err := usecase.userRepo.GetById(ctx, id)
-	if err != nil {
-		return nil, err
+	if err != nil || user == nil {
+		return nil, &apperror.ErrDataNotFound{Data: "user"}
 	}
 
 	wallet, err := usecase.walletRepo.GetByUserId(ctx, user.ID)
@@ -51,7 +52,7 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 	if !isPassValid {
 		return nil, err
 	}
-	expTime := time.Now().Add(time.Minute * 15)
+	expTime := time.Now().Add(time.Hour * 1)
 	claims := &auth.JWTClaim{
 		ID:    user.ID,
 		Name:  user.Name,

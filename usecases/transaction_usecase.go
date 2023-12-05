@@ -90,6 +90,10 @@ func (usecase *transactionUsecase) CreateTransferTransaction(ctx context.Context
 		return nil, err
 	}
 
+	if receiverWallet == nil {
+		return nil, &apperror.ErrWalletInvalid{}
+	}
+
 	if senderWallet.ID == receiverWallet.ID {
 		return nil, &apperror.ErrSenderAndReceiverSame{
 			Message: "user can't transfer money to theirself",

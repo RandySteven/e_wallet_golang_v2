@@ -11,6 +11,7 @@ type (
 	Handlers struct {
 		UserHandler        interfaces.UserHandler
 		TransactionHandler interfaces.TransactionHandler
+		GameHandler        interfaces.GameHandler
 	}
 )
 
@@ -21,5 +22,6 @@ func NewHandlers(repo configs.Repository) (*Handlers, error) {
 	return &Handlers{
 		UserHandler:        handlers.NewUserHandler(usecase.UserUsecase),
 		TransactionHandler: handlers.NewTransactionHandler(usecase.TransactionUsecase),
+		GameHandler:        handlers.NewGameHandler(usecase.GameUsecase),
 	}, nil
 }

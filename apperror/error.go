@@ -41,6 +41,15 @@ type ErrSenderAndReceiverSame struct {
 	Err     error
 }
 
+type ErrDataNotFound struct {
+	Data string
+	Err  error
+}
+
+type ErrWalletInvalid struct {
+	Err error
+}
+
 func (e *ErrSenderAndReceiverSame) Error() string {
 	return e.Message
 }
@@ -51,4 +60,12 @@ func (e *ErrAmountLimit) Error() string {
 
 func (e *ErrLengthValidation) Error() string {
 	return fmt.Sprintf("%s length must less than ", e.Field, e.MaxLength)
+}
+
+func (e *ErrDataNotFound) Error() string {
+	return fmt.Sprintf("%s not found", e.Data)
+}
+
+func (e *ErrWalletInvalid) Error() string {
+	return "wallet is invalid"
 }

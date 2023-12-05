@@ -6,6 +6,7 @@ import (
 	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"context"
+	"log"
 	"strconv"
 
 	"github.com/shopspring/decimal"
@@ -22,6 +23,7 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 	var transactions []models.Transaction
 	limit, _ := strconv.Atoi(query.Limit)
 	// page, _ := strconv.Atoi(query.Page)
+	log.Println(query.SortedBy)
 	desc := false
 	if query.Sort == enums.Desc {
 		desc = true

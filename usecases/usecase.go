@@ -8,6 +8,7 @@ import (
 type Usecase struct {
 	interfaces.UserUsecase
 	interfaces.TransactionUsecase
+	interfaces.GameUsecase
 }
 
 func NewUsecase(repo configs.Repository) *Usecase {

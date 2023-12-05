@@ -39,4 +39,12 @@ type (
 		Repository[models.SourceOfFund, SourceOfFundRepository]
 		GetSourceOfFundBySource(ctx context.Context, source string) (*models.SourceOfFund, error)
 	}
+
+	GameRepository interface {
+		Repository[models.Game, GameRepository]
+	}
+
+	BoxRepository interface {
+		Repository[models.Box, BoxRepository]
+	}
 )
