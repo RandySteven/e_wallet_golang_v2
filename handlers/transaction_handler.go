@@ -24,19 +24,13 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 		ctx       = context.WithValue(c.Request.Context(), "requestId", requestId)
 	)
 
-	sortBy := c.Query("sortBy")
-	sort := c.DefaultQuery("sort", "asc")
-	limit := c.DefaultQuery("limit", "25")
-	page := c.DefaultQuery("page", "1")
-
-	queryCondition := &entities.QueryCondition{
-		SortedBy: sortBy,
-		Sort:     sort,
-		Limit:    limit,
-		Page:     page,
+	var query entities.QueryCondition
+	if err := c.ShouldBindQuery(&query); err != nil {
+		c.Error(err)
+		return
 	}
 
-	transactions, err := handler.uscase.GetAllTransactionsRecords(ctx, queryCondition)
+	transactions, err := handler.uscase.GetAllTransactionsRecords(ctx, &query)
 	if err != nil {
 		c.Error(err)
 		return

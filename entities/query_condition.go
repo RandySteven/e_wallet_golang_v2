@@ -1,8 +1,8 @@
 package entities
 
 type QueryCondition struct {
-	SortedBy string
-	Sort     string
-	Limit    string
-	Page     string
+	SortedBy string `form:"sortBy"`
+	Sort     string `form:"sort"`
+	Limit    string `form:"limit"`
+	Page     string `form:"page"`
 }
