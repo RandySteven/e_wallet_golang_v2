@@ -18,7 +18,7 @@ type Game struct {
 	BoxID7   uint `gorm:"not null"`
 	BoxID8   uint `gorm:"not null"`
 	BoxID9   uint `gorm:"not null"`
-	WinBoxID uint
+	WinBoxID uint `gorm:"default:NULL"`
 
 	CreatedAt time.Time `gorm:"not null;default:current_timestamp"`
 	UpdatedAt time.Time `gorm:"not null;default:current_timestamp"`

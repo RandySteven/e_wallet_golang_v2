@@ -80,8 +80,8 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, err
 	}
 
-	if topup.SourceOfFund != enums.Reward {
-		return nil, &apperror.ErrInvalidRequest{Field: "source of funds"}
+	if topup.SourceOfFund == enums.Reward {
+		return nil, &apperror.ErrInvalidRequest{Field: enums.SourceOfFund}
 	}
 
 	sourceFund, err := usecase.sourceFundRepo.GetSourceOfFundBySource(ctx, topup.SourceOfFund)
@@ -90,7 +90,7 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 	}
 
 	if sourceFund == nil {
-		return nil, &apperror.ErrInvalidRequest{Field: "source of funds"}
+		return nil, &apperror.ErrInvalidRequest{Field: enums.SourceOfFund}
 	}
 
 	if decimal.Min(topup.Amount, decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT-1)) == topup.Amount ||

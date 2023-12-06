@@ -27,7 +27,6 @@ WHERE "transactions"."deletd_at" IS NULL
 ORDER BY amount ASC 
 LIMIT 25;
 
-SELECT * FROM transactions;
 SELECT * FROM boxes;
 
 INSERT INTO boxes (amount)
@@ -51,4 +50,8 @@ VALUES
     (170000.00),
     (180000.00);
 
+SELECT * FROM transactions;
 SELECT * FROM games;
+
+UPDATE games 
+SET win_box_id = 1;

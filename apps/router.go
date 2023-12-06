@@ -32,4 +32,5 @@ func (h *Handlers) InitRouter(r *gin.RouterGroup) {
 
 	gameRouter := r.Group("games")
 	gameRouter.POST("", h.GameHandler.PlayGame)
+	gameRouter.PUT("/:id", h.GameHandler.ChooseBox)
 }

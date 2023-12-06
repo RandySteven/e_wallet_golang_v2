@@ -49,6 +49,7 @@ type (
 
 	GameRepository interface {
 		Repository[models.Game, GameRepository]
+		CreateRewardTransaction(ctx context.Context, game *models.Game) (*models.Game, error)
 	}
 
 	BoxRepository interface {

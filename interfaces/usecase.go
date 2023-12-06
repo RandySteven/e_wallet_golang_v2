@@ -26,5 +26,6 @@ type (
 
 	GameUsecase interface {
 		PlayGame(ctx context.Context, game *models.Game) (*models.Game, error)
+		ChooseReward(ctx context.Context, chooseReward *req.ChooseReward) (*models.Game, error)
 	}
 )
