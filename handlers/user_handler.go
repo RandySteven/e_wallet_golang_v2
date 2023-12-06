@@ -153,6 +153,7 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 	}
 	user, err = handler.usecase.RegisterUser(ctx, user)
 	if err != nil {
+		c.Error(err)
 		return
 	}
 

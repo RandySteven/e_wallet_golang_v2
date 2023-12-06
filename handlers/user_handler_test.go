@@ -191,5 +191,4 @@ func (suite *UserHandlerTestSuite) TestFailedRegisterUserInternalServerError() {
 
 	suite.Equal(http.StatusInternalServerError, w.Code)
 
-	suite.T().Log(w.Body)
 }
