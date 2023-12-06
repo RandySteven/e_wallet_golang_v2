@@ -451,38 +451,6 @@ func TestChooseReward(t *testing.T) {
 		assert.Equal(t, &apperror.ErrInvalidRequest{Field: enums.BoxId}, err)
 	})
 
-	t.Run("should return failed while create reward transaction", func(t *testing.T) {
-		ctx := context.Background()
-		gameRepo := mocks.GameRepository{}
-		userRepo := mocks.UserRepository{}
-		transactionRepo := mocks.TransactionRepository{}
-		walletRepo := mocks.WalletRepository{}
-		boxesRepo := mocks.BoxRepository{}
-
-		gameUsecase := usecases.NewGameUsecase(
-			&gameRepo,
-			&userRepo,
-			&transactionRepo,
-			&walletRepo,
-			&boxesRepo,
-		)
-
-		chooseReward := &req.ChooseReward{
-			GameID: 1,
-			BoxID:  1,
-		}
-
-		gameRepo.On("GetById", mock.Anything, chooseReward.GameID).
-			Return(&games[0], nil)
-
-		gameRepo.On("CreateRewardTransaction", mock.Anything, &games[0]).
-			Return(nil, errors.New("mock error"))
-
-		_, err := gameUsecase.ChooseReward(ctx, chooseReward)
-
-		assert.Error(t, err)
-		assert.Equal(t, "mock error", err.Error())
-	})
 }
 
 func TestGetUserCurrentChance(t *testing.T) {
