@@ -4,21 +4,21 @@ import "github.com/shopspring/decimal"
 
 type UserResponse struct {
 	ID    uint
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
 }
 
 type UserLoginResponse struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Token string `json:"token"`
+	ID    uint   `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
+	Token string `json:"token,omitempty"`
 }
 
 type UserDetail struct {
-	Name         string          `json:"name"`
-	Email        string          `json:"email"`
-	WalletNumber string          `json:"wallet_number"`
-	Balance      decimal.Decimal `json:"balance"`
-	Chance       uint            `json:"chance"`
+	Name         string          `json:"name,omitempty"`
+	Email        string          `json:"email,omitempty"`
+	WalletNumber string          `json:"wallet_number,omitempty"`
+	Balance      decimal.Decimal `json:"balance,omitempty"`
+	Chance       uint            `json:"chance,omitempty"`
 }

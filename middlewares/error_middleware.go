@@ -5,6 +5,7 @@ import (
 	"assignment_4/entities/payload/res"
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +14,8 @@ func ErrorMiddleware() gin.HandlerFunc {
 	var (
 		// errWalletNumberInvalid   *apperror.ErrWalletNumberInvalid
 		// errAmountInvalid         *apperror.ErrAmountInvalid
-		// errFieldIsRequired       *apperror.ErrFieldIsRequired
-		errAmountLimit *apperror.ErrAmountLimit
+		errFieldValidation *apperror.ErrFieldValidation
+		errAmountLimit     *apperror.ErrAmountLimit
 		// errLengthValidation      *apperror.ErrLengthValidation
 		errBalanceNotEnough      *apperror.ErrBalanceNotEnough
 		errSenderAndReceiverSame *apperror.ErrSenderAndReceiverSame
@@ -59,6 +60,10 @@ func ErrorMiddleware() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusForbidden, resp)
 			case errors.As(ginErr.Err, &errTokenInvalid):
 				resp.Errors = append(resp.Errors, ginErr.Err.Error())
+				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
+			case errors.As(ginErr.Err, &errFieldValidation):
+				messages := strings.Split(ginErr.Err.Error(), "|")
+				resp.Errors = messages
 				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			// case errors.As(ginErr.Err, &errLengthValidation):
 			// 	resp.Errors = append(resp.Errors, ginErr.Err.Error())

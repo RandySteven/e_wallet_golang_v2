@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"assignment_4/apperror"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
@@ -108,7 +109,8 @@ func (handler *UserHandler) LoginUser(c *gin.Context) {
 		login     *req.UserLoginRequest
 	)
 	if err := c.ShouldBind(&login); err != nil {
-		c.Error(err)
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(login)}
+		c.Error(errBadRequest)
 		return
 	}
 	userRes, err := handler.usecase.LoginUser(ctx, login)
@@ -133,7 +135,9 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 	)
 
 	if err := c.ShouldBind(&register); err != nil {
-		c.Error(err)
+		errorBad := &apperror.ErrFieldValidation{Message: utils.Validate(register)}
+
+		c.Error(errorBad)
 		return
 	}
 
@@ -152,9 +156,15 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
+	userResp := res.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+	}
+
 	resp := res.Response{
 		Message: "Success created user",
-		Data:    user,
+		Data:    userResp,
 	}
 	c.JSON(http.StatusCreated, resp)
 }

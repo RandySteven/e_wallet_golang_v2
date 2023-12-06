@@ -2,6 +2,7 @@ package apperror
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/shopspring/decimal"
 )
@@ -21,9 +22,8 @@ type ErrAmountInvalid struct {
 	Err     error
 }
 
-type ErrFieldIsRequired struct {
-	Field   string
-	Message string
+type ErrFieldValidation struct {
+	Message []string
 	Err     error
 }
 
@@ -117,4 +117,8 @@ func (e *ErrTokenAlreadyUsed) Error() string {
 
 func (e *ErrTokenInvalid) Error() string {
 	return "token is invalid"
+}
+
+func (e *ErrFieldValidation) Error() string {
+	return strings.Join(e.Message, "|")
 }

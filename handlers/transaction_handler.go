@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"assignment_4/apperror"
 	"assignment_4/entities"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
 	"assignment_4/interfaces"
+	"assignment_4/utils"
 	"context"
 	"log"
 	"net/http"
@@ -75,7 +77,8 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 		request   *req.TopupRequest
 	)
 	if err := c.ShouldBind(&request); err != nil {
-		c.Error(err)
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(request)}
+		c.Error(errBadRequest)
 		return
 	}
 
@@ -106,7 +109,8 @@ func (handler *TransactionHandler) TransferTransaction(c *gin.Context) {
 		request   *req.TransferRequest
 	)
 	if err := c.ShouldBind(&request); err != nil {
-		c.Error(err)
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(request)}
+		c.Error(errBadRequest)
 		return
 	}
 
