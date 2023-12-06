@@ -6,6 +6,8 @@ import (
 	"assignment_4/entities/models"
 	"log"
 	"os"
+	"strconv"
+	"time"
 )
 
 func InitConfig() *models.Config {
@@ -19,6 +21,12 @@ func InitConfig() *models.Config {
 
 func AppPort() string {
 	return os.Getenv("APP_PORT")
+}
+
+func TimeoutDuration() time.Duration {
+	timeOut, _ := strconv.Atoi(os.Getenv("TIME_OUT_DURATION"))
+	var timeDuration time.Duration = time.Duration(timeOut)
+	return timeDuration
 }
 
 func InitHandlers() *apps.Handlers {
