@@ -67,15 +67,6 @@ func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context
 	return transactionPage, nil
 }
 
-// GetUserHistoryTransactions implements interfaces.TransactionUsecase.
-func (usecase *transactionUsecase) GetUserHistoryTransactions(ctx context.Context, id uint) ([]models.Transaction, error) {
-	wallet, err := usecase.walletRepo.GetByUserId(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return usecase.transactionRepo.GetTransactionsByWalletId(ctx, wallet.ID)
-}
-
 // CreateTopupTransaction implements interfaces.TransactionUsecase.
 func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, topup *req.TopupRequest) (*models.Transaction, error) {
 	wallet, err := usecase.walletRepo.GetByUserId(ctx, topup.UserID)
@@ -117,15 +108,17 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, err
 	}
 
-	user, err := usecase.userRepo.GetById(ctx, topup.UserID)
-	if err != nil {
-		return nil, err
-	}
+	if transaction.Amount.Mod(decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)).Equal(decimal.NewFromInt(0)) {
+		user, err := usecase.userRepo.GetById(ctx, topup.UserID)
+		if err != nil {
+			return nil, err
+		}
 
-	user.Chance += 1
-	_, err = usecase.userRepo.Update(ctx, user)
-	if err != nil {
-		return nil, err
+		user.Chance += 1
+		_, err = usecase.userRepo.Update(ctx, user)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return transaction, nil

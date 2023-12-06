@@ -175,6 +175,27 @@ func (_m *TransactionRepository) GetById(ctx context.Context, id uint) (*models.
 	return r0, r1
 }
 
+// GetTransactionCountBasedUserId provides a mock function with given fields: ctx, id
+func (_m *TransactionRepository) GetTransactionCountBasedUserId(ctx context.Context, id uint) (uint, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 uint
+	if rf, ok := ret.Get(0).(func(context.Context, uint) uint); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(uint)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetTransactionsByWalletId provides a mock function with given fields: ctx, walletId
 func (_m *TransactionRepository) GetTransactionsByWalletId(ctx context.Context, walletId uint) ([]models.Transaction, error) {
 	ret := _m.Called(ctx, walletId)

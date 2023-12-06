@@ -20,7 +20,6 @@ type (
 	TransactionUsecase interface {
 		CreateTransferTransaction(ctx context.Context, transfer *req.TransferRequest) (*models.Transaction, error)
 		CreateTopupTransaction(ctx context.Context, topup *req.TopupRequest) (*models.Transaction, error)
-		GetUserHistoryTransactions(ctx context.Context, id uint) ([]models.Transaction, error)
 		GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition, userId uint) (*res.TransactionPaginationResponses, error)
 	}
 

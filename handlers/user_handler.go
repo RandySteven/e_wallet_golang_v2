@@ -144,17 +144,14 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	pass, err := utils.HashPassword(register.Password)
-	if err != nil {
-		c.Error(err)
-		return
-	}
+	pass, _ := utils.HashPassword(register.Password)
+
 	user := &models.User{
 		Name:     register.Name,
 		Email:    register.Email,
 		Password: pass,
 	}
-	user, err = handler.usecase.RegisterUser(ctx, user)
+	user, err := handler.usecase.RegisterUser(ctx, user)
 	if err != nil {
 		c.Error(err)
 		return
