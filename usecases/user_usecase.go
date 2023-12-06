@@ -41,10 +41,7 @@ func (usecase *userUsecase) ResetPassword(ctx context.Context, reset *req.Passwo
 		return nil, &apperror.ErrTokenExpired{}
 	}
 
-	pass, err := utils.HashPassword(reset.NewPassword)
-	if err != nil {
-		return nil, err
-	}
+	pass, _ := utils.HashPassword(reset.NewPassword)
 
 	user, err := usecase.forgotPassRepo.UpdateUserPassword(ctx, token, pass)
 	if err != nil {
@@ -119,14 +116,12 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "APPLICATION",
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(expTime),
 		},
 	}
 	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenAlgo.SignedString(auth.JWT_KEY)
-	if err != nil {
-		return nil, err
-	}
+	token, _ := tokenAlgo.SignedString(auth.JWT_KEY)
 	userResp := res.UserLoginResponse{
 		ID:    user.ID,
 		Name:  user.Name,
@@ -138,7 +133,14 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 
 // RegisterUser implements interfaces.UserUsecase.
 func (usecase *userUsecase) RegisterUser(ctx context.Context, user *models.User) (*models.User, error) {
-	user, err := usecase.userRepo.RegisterUser(ctx, user)
+	isUserExists, err := usecase.userRepo.GetByEmail(ctx, user.Email)
+	if err != nil {
+		return nil, err
+	}
+	if isUserExists != nil {
+		return nil, &apperror.ErrEmailAlreadyExists{}
+	}
+	user, err = usecase.userRepo.RegisterUser(ctx, user)
 	return user, err
 }
 

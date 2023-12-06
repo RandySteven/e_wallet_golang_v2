@@ -84,6 +84,10 @@ type ErrLogin struct {
 	Err error
 }
 
+type ErrEmailAlreadyExists struct {
+	Err error
+}
+
 func (e *ErrSenderAndReceiverSame) Error() string {
 	return e.Message
 }
@@ -138,4 +142,8 @@ func (e *ErrInvalidFormat) Error() string {
 
 func (e *ErrLogin) Error() string {
 	return "email and password didn't match in user"
+}
+
+func (e *ErrEmailAlreadyExists) Error() string {
+	return "email already exists"
 }

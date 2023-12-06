@@ -24,6 +24,7 @@ func ErrorMiddleware() gin.HandlerFunc {
 		errTokenInvalid          *apperror.ErrTokenInvalid
 		errInvalidFormat         *apperror.ErrInvalidFormat
 		errLogin                 *apperror.ErrLogin
+		errEmailAlreadyExists    *apperror.ErrEmailAlreadyExists
 	)
 
 	return func(c *gin.Context) {
@@ -59,6 +60,8 @@ func ErrorMiddleware() gin.HandlerFunc {
 			case errors.As(ginErr.Err, &errInvalidFormat):
 				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			case errors.As(ginErr.Err, &errLogin):
+				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
+			case errors.As(ginErr.Err, &errEmailAlreadyExists):
 				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			default:
 				c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"errors": ginErr.Err.Error()})

@@ -32,6 +32,9 @@ func TestRegisterUser(t *testing.T) {
 		}
 		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
 
+		userRepo.On("GetByEmail", mock.Anything, user.Email).
+			Return(nil, nil)
+
 		userRepo.On("RegisterUser", mock.Anything, mock.AnythingOfType("*models.User")).
 			Return(user, nil)
 
@@ -53,6 +56,9 @@ func TestRegisterUser(t *testing.T) {
 		}
 		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
 
+		userRepo.On("GetByEmail", mock.Anything, user.Email).
+			Return(nil, nil)
+
 		userRepo.On("RegisterUser", mock.Anything, mock.AnythingOfType("*models.User")).
 			Return(nil, errors.New("mock error"))
 
@@ -61,6 +67,58 @@ func TestRegisterUser(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Nil(t, resultUser)
+	})
+
+	t.Run("failed to register user email already exists", func(t *testing.T) {
+		walletRepo := &mocks.WalletRepository{}
+		userRepo := &mocks.UserRepository{}
+		forgotPassRepo := &mocks.ForgotPasswordRepository{}
+		user := &models.User{
+			Name:     "Randy Steven",
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		existsUser := &models.User{
+			Name:     "Randy Steven",
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
+
+		userRepo.On("GetByEmail", mock.Anything, existsUser.Email).
+			Return(existsUser, nil)
+
+		ctx := context.Background()
+		_, err := userusecase.RegisterUser(ctx, user)
+
+		var errEmail = &apperror.ErrEmailAlreadyExists{}
+		assert.Error(t, err)
+		assert.Equal(t, errEmail, err)
+	})
+
+	t.Run("failed to register user error to get email query", func(t *testing.T) {
+		walletRepo := &mocks.WalletRepository{}
+		userRepo := &mocks.UserRepository{}
+		forgotPassRepo := &mocks.ForgotPasswordRepository{}
+		user := &models.User{
+			Name:     "Randy Steven",
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		existsUser := &models.User{
+			Name:     "Randy Steven",
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
+
+		userRepo.On("GetByEmail", mock.Anything, existsUser.Email).
+			Return(nil, errors.New("mock error"))
+
+		ctx := context.Background()
+		_, err := userusecase.RegisterUser(ctx, user)
+
+		assert.Error(t, err)
 	})
 }
 

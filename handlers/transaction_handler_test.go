@@ -199,6 +199,7 @@ func (suite *TransactionHandlerTestSuite) TestGetAllListTransactionsFilterByDate
 	q := req.URL.Query()
 	q.Add("start_date", "2023-01-02")
 	q.Add("end_date", "2023-01-03")
+	req.URL.RawQuery = q.Encode()
 
 	transactionPage := &res.TransactionPaginationResponses{
 		Page:         "1",
