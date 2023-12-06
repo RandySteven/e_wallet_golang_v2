@@ -5,6 +5,7 @@ import (
 	"assignment_4/entities"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
+	"assignment_4/entities/payload/res"
 	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"context"
@@ -20,17 +21,42 @@ type transactionUsecase struct {
 }
 
 // GetAllTransactionsRecords implements interfaces.TransactionUsecase.
-func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) ([]models.Transaction, error) {
+func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error) {
 	transactions, err := usecase.transactionRepo.GetAllTransactions(ctx, query)
 	if err != nil {
 		return nil, err
 	}
-	// transactionPage := &res.TransactionPaginationResponses{
-	// 	Page:         query.Page,
-	// 	Total:        uint(len(transactions)),
-	// 	Transactions: transactions,
-	// }
-	return transactions, nil
+	totalItems, err := usecase.transactionRepo.Count(ctx)
+
+	var transactionDetails = []res.TransactionDetailResponse{}
+	for _, transaction := range transactions {
+		transactionDetail := res.TransactionDetailResponse{
+			ID:              transaction.ID,
+			TransactionDate: transaction.CreatedAt,
+			Description:     transaction.Description,
+			Amount:          transaction.Amount,
+		}
+
+		if transaction.ReceiverID == transaction.SenderID {
+			transactionDetail.TransactionType = enums.Topup
+		} else {
+			transactionDetail.TransactionType = enums.Transfer
+			transactionDetail.SenderName = transaction.Sender.User.Name
+			transactionDetail.SenderWallet = transaction.Sender.Number
+		}
+
+		transactionDetail.ReceipentName = transaction.Receiver.User.Name
+		transactionDetail.ReceipentWallet = transaction.Receiver.Number
+
+		transactionDetails = append(transactionDetails, transactionDetail)
+	}
+
+	transactionPage := &res.TransactionPaginationResponses{
+		Page:         query.Page,
+		Total:        totalItems,
+		Transactions: transactionDetails,
+	}
+	return transactionPage, nil
 }
 
 // GetUserHistoryTransactions implements interfaces.TransactionUsecase.

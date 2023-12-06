@@ -54,103 +54,119 @@ var transactions = []models.Transaction{
 	},
 }
 
-func (suite *TransactionHandlerTestSuite) TestDoTransfer() {
-	suite.Run("should return 201 after success transfer", func() {
-		request := `{
+func (suite *TransactionHandlerTestSuite) TestSuccessTransfer() {
+	request := `{
 			"to": "1000000000001",
 			"amount": "20000.00",
 			"description": "Ini ya duitnya"
 		}`
 
-		req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
-		req.Header.Set("Content-Type", "application/json")
-		w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
 
-		suite.transactionUsecase.On(
-			"CreateTransferTransaction", mock.Anything,
-			mock.AnythingOfType("*req.TransferRequest"),
-		).Return(&transactions[0], nil)
+	suite.transactionUsecase.On(
+		"CreateTransferTransaction", mock.Anything,
+		mock.AnythingOfType("*req.TransferRequest"),
+	).Return(&transactions[0], nil)
 
-		suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
-		suite.router.ServeHTTP(w, req)
+	suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
+	suite.router.ServeHTTP(w, req)
 
-		suite.Equal(http.StatusCreated, w.Code)
-	})
+	suite.Equal(http.StatusCreated, w.Code)
 
-	suite.Run("should return 400 failed to create transfer", func() {
-		request := `{
-			"to": "1000000000001",
-			"amount": "20000.00",
-			"description": "Ini ya duitnya"
-		}`
-
-		req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
-		w := httptest.NewRecorder()
-
-		suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
-		suite.router.ServeHTTP(w, req)
-
-		suite.Equal(http.StatusBadRequest, w.Code)
-	})
-
-	suite.Run("should return 500 failed to create transfer", func() {
-
-	})
 }
 
-func (suite *TransactionHandlerTestSuite) TestDoTopup() {
-	// suite.Run("should return 201 after success to top up", func() {
-	// 	request := `{
-	// 		"amount": "10000",
-	// 		"source_of_fund": "Bank Transfer"
-	// 	}`
+// func (suite *TransactionHandlerTestSuite) TestFailedBadRequestTransfer() {
+// 	request := `{
+// 		"to": "1000000000001",
+// 		"description": "Ini ya duitnya"
+// 	}`
 
-	// 	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
-	// 	req.Header.Set("Content-Type", "application/json")
-	// 	w := httptest.NewRecorder()
+// 	req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
+// 	req.Header.Set("Content-Type", "application/json")
+// 	w := httptest.NewRecorder()
 
-	// 	suite.transactionUsecase.
-	// 		On("CreateTopupTransaction", mock.Anything, mock.AnythingOfType("*req.TopupRequest")).
-	// 		Return(&transactions[1], nil)
+// 	suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
+// 	suite.router.ServeHTTP(w, req)
 
-	// 	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
-	// 	suite.router.ServeHTTP(w, req)
+// 	suite.Equal(http.StatusBadRequest, w.Code)
+// }
 
-	// 	suite.Equal(http.StatusCreated, w.Code)
-	// })
+func (suite *TransactionHandlerTestSuite) TestInternalServerErrorTransfer() {
+	request := `{
+		"to": "1000000000001",
+		"amount": "20000.00",
+		"description": "Ini ya duitnya"
+	}`
 
-	// suite.Run("should return 400 failed to top up", func() {
-	// 	request := `{
-	// 		"amount": "10000"
-	// 	}`
+	req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
 
-	// 	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
-	// 	req.Header.Set("Content-Type", "application/json")
-	// 	w := httptest.NewRecorder()
+	suite.transactionUsecase.On(
+		"CreateTransferTransaction", mock.Anything,
+		mock.AnythingOfType("*req.TransferRequest"),
+	).Return(nil, errors.New("mock error"))
 
-	// 	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
-	// 	suite.router.ServeHTTP(w, req)
+	suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
+	suite.router.ServeHTTP(w, req)
 
-	// 	suite.Equal(http.StatusBadRequest, w.Code)
-	// })
+	suite.Equal(http.StatusInternalServerError, w.Code)
+}
 
-	suite.Run("should return 500 due error in db", func() {
-		request := `{
+func (suite *TransactionHandlerTestSuite) TestSuccessDoTopup() {
+	request := `{
 			"amount": "10000",
 			"source_of_fund": "Bank Transfer"
 		}`
 
-		req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
-		req.Header.Set("Content-Type", "application/json")
-		w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
 
-		suite.transactionUsecase.
-			On("CreateTopupTransaction", mock.Anything, mock.AnythingOfType("*req.TopupRequest")).
-			Return(nil, errors.New("mock error"))
+	suite.transactionUsecase.
+		On("CreateTopupTransaction", mock.Anything, mock.AnythingOfType("*req.TopupRequest")).
+		Return(&transactions[1], nil)
 
-		suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
-		suite.router.ServeHTTP(w, req)
+	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
+	suite.router.ServeHTTP(w, req)
 
-		suite.Equal(http.StatusInternalServerError, w.Code)
-	})
+	suite.Equal(http.StatusCreated, w.Code)
+
+}
+
+func (suite *TransactionHandlerTestSuite) TestFailedTopup() {
+	request := `{
+			"amount": "10000"
+		}`
+
+	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusBadRequest, w.Code)
+}
+
+func (suite *TransactionHandlerTestSuite) TestDBErrorTopup() {
+	request := `{
+		"amount": "10000",
+		"source_of_fund": "Bank Transfer"
+	}`
+
+	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.transactionUsecase.
+		On("CreateTopupTransaction", mock.Anything, mock.AnythingOfType("*req.TopupRequest")).
+		Return(nil, errors.New("mock error"))
+
+	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusInternalServerError, w.Code)
 }

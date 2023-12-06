@@ -5,7 +5,6 @@ import (
 	"assignment_4/entities"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
-	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"assignment_4/utils"
 	"context"
@@ -49,39 +48,10 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 		query.EndDate = endDate.Format("2006-01-02")
 	}
 
-	transactions, err := handler.uscase.GetAllTransactionsRecords(ctx, &query)
+	transactionResponse, err := handler.uscase.GetAllTransactionsRecords(ctx, &query)
 	if err != nil {
 		c.Error(err)
 		return
-	}
-
-	var transactionDetails []res.TransactionDetailResponse
-	for _, transaction := range transactions {
-		transactionDetail := res.TransactionDetailResponse{
-			ID:              transaction.ID,
-			TransactionDate: transaction.CreatedAt,
-			Description:     transaction.Description,
-			Amount:          transaction.Amount,
-		}
-
-		if transaction.ReceiverID == transaction.SenderID {
-			transactionDetail.TransactionType = enums.Topup
-		} else {
-			transactionDetail.TransactionType = enums.Transfer
-			transactionDetail.SenderName = transaction.Sender.User.Name
-			transactionDetail.SenderWallet = transaction.Sender.Number
-		}
-
-		transactionDetail.ReceipentName = transaction.Receiver.User.Name
-		transactionDetail.ReceipentWallet = transaction.Receiver.Number
-
-		transactionDetails = append(transactionDetails, transactionDetail)
-	}
-
-	transactionResponse := res.TransactionPaginationResponses{
-		Page:         query.Page,
-		Total:        uint(len(transactionDetails)),
-		Transactions: transactionDetails,
 	}
 
 	resp := res.Response{

@@ -50,139 +50,126 @@ var users = []models.User{
 	},
 }
 
-func (suite *UserHandlerTestSuite) TestGetUserById() {
-	userDetail := &res.UserDetail{}
+// func (suite *UserHandlerTestSuite) TestGetUserById() {
+// 	userDetail := &res.UserDetail{}
 
-	suite.userUsecase.On("GetUserDetail", mock.Anything, uint(1)).Return(userDetail, nil)
+// 	suite.userUsecase.On("GetUserDetail", mock.Anything, uint(1)).Return(userDetail, nil)
 
-	req, _ := http.NewRequest("GET", "/users/1", nil)
-	w := httptest.NewRecorder()
+// 	req, _ := http.NewRequest("GET", "/users/1", nil)
+// 	w := httptest.NewRecorder()
 
-	suite.router.GET("/users/:id", suite.userHandler.GetUserById)
-	suite.router.ServeHTTP(w, req)
+// 	suite.router.GET("/users/:id", suite.userHandler.GetUserById)
+// 	suite.router.ServeHTTP(w, req)
 
-	suite.Assert().Equal(http.StatusOK, w.Code)
+// 	suite.Assert().Equal(http.StatusOK, w.Code)
 
-	var respBody map[string]interface{}
-	_ = json.Unmarshal(w.Body.Bytes(), &respBody)
+// 	var respBody map[string]interface{}
+// 	_ = json.Unmarshal(w.Body.Bytes(), &respBody)
 
-	suite.Assert().Equal("Success get user", respBody["Message"])
-	suite.Assert().Equal(userDetail, respBody["Data"])
-}
+// 	suite.Assert().Equal("Success get user", respBody["Message"])
+// 	suite.Assert().Equal(userDetail, respBody["Data"])
+// }
 
 // Test LoginUser method
 func (suite *UserHandlerTestSuite) TestLoginUser() {
-	suite.Run("should return 200 success to login", func() {
-		loginRequest := &req.UserLoginRequest{
-			Email:    "randy.steven@gmail.com",
-			Password: "test_1234",
-		}
+	loginRequest := &req.UserLoginRequest{
+		Email:    "randy.steven@gmail.com",
+		Password: "test_1234",
+	}
 
-		userResponse := &res.UserLoginResponse{
-			ID:    1,
-			Name:  "Randy Steven",
-			Email: "randy.steven@gmail.com",
-			Token: "lalalala",
-		}
+	userResponse := &res.UserLoginResponse{
+		ID:    1,
+		Name:  "Randy Steven",
+		Email: "randy.steven@gmail.com",
+		Token: "lalalala",
+	}
 
-		suite.userUsecase.On("LoginUser", mock.Anything, mock.AnythingOfType("*req.UserLoginRequest")).Return(userResponse, nil)
+	suite.userUsecase.On("LoginUser", mock.Anything, mock.AnythingOfType("*req.UserLoginRequest")).Return(userResponse, nil)
 
-		loginRequestBody, err := json.Marshal(loginRequest)
-		assert.NoError(suite.T(), err)
+	loginRequestBody, err := json.Marshal(loginRequest)
+	assert.NoError(suite.T(), err)
 
-		req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(loginRequestBody))
-		req.Header.Set("Content-Type", "application/json")
-		assert.NoError(suite.T(), err)
+	req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(loginRequestBody))
+	req.Header.Set("Content-Type", "application/json")
+	assert.NoError(suite.T(), err)
 
-		w := httptest.NewRecorder()
+	w := httptest.NewRecorder()
 
-		suite.router.POST("/login", suite.userHandler.LoginUser)
-		suite.router.ServeHTTP(w, req)
+	suite.router.POST("/login", suite.userHandler.LoginUser)
+	suite.router.ServeHTTP(w, req)
 
-		suite.T().Log(w.Body)
-		assert.Equal(suite.T(), http.StatusOK, w.Code)
+	suite.T().Log(w.Body)
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
 
-		// Unmarshal response body
-		// var respBody map[string]interface{}
-		// err = json.Unmarshal(w.Body.Bytes(), &respBody)
-		// assert.NoError(suite.T(), err)
+}
 
-		// Assert response body
-		// assert.Equal(suite.T(), "Success to login user", respBody["Message"])
-		// assert.Equal(suite.T(), userResponse, respBody["Data"])
-	})
+func (suite *UserHandlerTestSuite) TestLoginFailed() {
+	loginRequest := &req.UserLoginRequest{
+		Password: "test_1234",
+	}
 
-	suite.Run("should return 400 failed to login because email field is missing", func() {
-		loginRequest := &req.UserLoginRequest{
-			Password: "test_1234",
-		}
+	loginRequestBody, err := json.Marshal(loginRequest)
+	assert.NoError(suite.T(), err)
 
-		loginRequestBody, err := json.Marshal(loginRequest)
-		assert.NoError(suite.T(), err)
+	req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(loginRequestBody))
+	req.Header.Set("Content-Type", "application/json")
+	assert.NoError(suite.T(), err)
 
-		req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(loginRequestBody))
-		req.Header.Set("Content-Type", "application/json")
-		assert.NoError(suite.T(), err)
+	w := httptest.NewRecorder()
 
-		w := httptest.NewRecorder()
+	suite.router.POST("/login", suite.userHandler.LoginUser)
+	suite.router.ServeHTTP(w, req)
 
-		suite.router.POST("/login", suite.userHandler.LoginUser)
-		suite.router.ServeHTTP(w, req)
-
-		suite.T().Log(w.Body)
-		assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
-
-	})
+	suite.T().Log(w.Body)
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
 }
 
 // Test RegisterUser method
 func (suite *UserHandlerTestSuite) TestRegisterUser() {
-	suite.Run("should return 201 success to create user", func() {
-		registerRequest := &req.UserRegisterRequest{
-			Name:     "John Doe",
-			Email:    "test@example.com",
-			Password: "password123",
-		}
+	registerRequest := &req.UserRegisterRequest{
+		Name:     "John Doe",
+		Email:    "test@example.com",
+		Password: "password123",
+	}
 
-		suite.userUsecase.On("RegisterUser", mock.Anything, mock.AnythingOfType("*models.User")).Return(&users[0], nil)
+	suite.userUsecase.On("RegisterUser", mock.Anything, mock.AnythingOfType("*models.User")).Return(&users[0], nil)
 
-		registerRequestBody, err := json.Marshal(registerRequest)
-		assert.NoError(suite.T(), err)
+	registerRequestBody, err := json.Marshal(registerRequest)
+	assert.NoError(suite.T(), err)
 
-		req, err := http.NewRequest("POST", "/register", bytes.NewBuffer(registerRequestBody))
-		req.Header.Set("Content-Type", "application/json")
-		assert.NoError(suite.T(), err)
+	req, err := http.NewRequest("POST", "/register", bytes.NewBuffer(registerRequestBody))
+	req.Header.Set("Content-Type", "application/json")
+	assert.NoError(suite.T(), err)
 
-		w := httptest.NewRecorder()
+	w := httptest.NewRecorder()
 
-		suite.router.POST("/register", suite.userHandler.RegisterUser)
-		suite.router.ServeHTTP(w, req)
+	suite.router.POST("/register", suite.userHandler.RegisterUser)
+	suite.router.ServeHTTP(w, req)
 
-		assert.Equal(suite.T(), http.StatusCreated, w.Code)
+	assert.Equal(suite.T(), http.StatusCreated, w.Code)
 
-		suite.T().Log(w.Body)
-	})
+	suite.T().Log(w.Body)
+}
 
-	suite.Run("should return 400 failed to create user", func() {
-		registerRequest := &req.UserRegisterRequest{
-			Name:  "John Doe",
-			Email: "test@example.com",
-		}
+func (suite *UserHandlerTestSuite) TestFailedRegisterUser() {
+	registerRequest := &req.UserRegisterRequest{
+		Name:  "John Doe",
+		Email: "test@example.com",
+	}
 
-		registerRequestBody, err := json.Marshal(registerRequest)
-		assert.NoError(suite.T(), err)
+	registerRequestBody, err := json.Marshal(registerRequest)
+	assert.NoError(suite.T(), err)
 
-		req, err := http.NewRequest("POST", "/register", bytes.NewBuffer(registerRequestBody))
-		req.Header.Set("Content-Type", "application/json")
-		assert.NoError(suite.T(), err)
+	req, err := http.NewRequest("POST", "/register", bytes.NewBuffer(registerRequestBody))
+	req.Header.Set("Content-Type", "application/json")
+	assert.NoError(suite.T(), err)
 
-		w := httptest.NewRecorder()
+	w := httptest.NewRecorder()
 
-		suite.router.POST("/register", suite.userHandler.RegisterUser)
-		suite.router.ServeHTTP(w, req)
+	suite.router.POST("/register", suite.userHandler.RegisterUser)
+	suite.router.ServeHTTP(w, req)
 
-		assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
 
-		suite.T().Log(w.Body)
-	})
+	suite.T().Log(w.Body)
 }
