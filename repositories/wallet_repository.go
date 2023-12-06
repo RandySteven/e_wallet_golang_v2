@@ -3,6 +3,7 @@ package repositories
 import (
 	"assignment_4/entities/models"
 	"assignment_4/interfaces"
+	"assignment_4/utils"
 	"context"
 
 	"gorm.io/gorm"
@@ -10,6 +11,11 @@ import (
 
 type walletRepository struct {
 	db *gorm.DB
+}
+
+// Count implements interfaces.WalletRepository.
+func (repo *walletRepository) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.Wallet](ctx, repo.db, &models.Wallet{})
 }
 
 // GetByUserId implements interfaces.WalletRepository.

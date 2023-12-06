@@ -5,6 +5,7 @@ import (
 	"assignment_4/entities/models"
 	"assignment_4/enums"
 	"assignment_4/interfaces"
+	"assignment_4/utils"
 	"context"
 	"strconv"
 
@@ -15,6 +16,11 @@ import (
 
 type transactionRepository struct {
 	db *gorm.DB
+}
+
+// Count implements interfaces.TransactionRepository.
+func (repo *transactionRepository) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.Transaction](ctx, repo.db, &models.Transaction{})
 }
 
 // GetAllTransactions implements interfaces.TransactionRepository.
@@ -29,7 +35,8 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 	sql := repo.db.WithContext(ctx).Model(&models.Transaction{}).
 		Preload("Receiver.User").
 		Preload("Sender.User").
-		Offset((page - 1) * limit)
+		Offset((page - 1) * limit).
+		Limit(limit)
 
 	if query.SortedBy != "" {
 		sql.Order(clause.OrderByColumn{

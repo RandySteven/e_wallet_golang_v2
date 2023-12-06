@@ -14,6 +14,7 @@ type (
 		Update(ctx context.Context, entity *T) (*T, error)
 		BeginTrx(ctx context.Context) I
 		CommitOrRollback(ctx context.Context)
+		Count(ctx context.Context) (uint, error)
 	}
 	UserRepository interface {
 		Repository[models.User, UserRepository]

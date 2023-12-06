@@ -15,6 +15,11 @@ type userRepository struct {
 	db *gorm.DB
 }
 
+// Count implements interfaces.UserRepository.
+func (repo *userRepository) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.User](ctx, repo.db, &models.User{})
+}
+
 // RegisterUser implements interfaces.UserRepository.
 func (repo *userRepository) RegisterUser(ctx context.Context, user *models.User) (*models.User, error) {
 	err := repo.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {

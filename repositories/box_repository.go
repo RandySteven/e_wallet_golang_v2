@@ -14,6 +14,11 @@ type boxRepository struct {
 	db *gorm.DB
 }
 
+// Count implements interfaces.BoxRepository.
+func (repo *boxRepository) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.Box](ctx, repo.db, &models.Box{})
+}
+
 // GetNineRandomBoxes implements interfaces.BoxRepository.
 func (repo *boxRepository) GetNineRandomBoxes(ctx context.Context) ([]models.Box, error) {
 	var boxes []models.Box

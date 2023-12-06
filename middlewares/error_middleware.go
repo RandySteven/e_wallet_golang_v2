@@ -25,6 +25,7 @@ func ErrorMiddleware() gin.HandlerFunc {
 		errTokenAlreadyUsed      *apperror.ErrTokenAlreadyUsed
 		errTokenExpired          *apperror.ErrTokenExpired
 		errTokenInvalid          *apperror.ErrTokenInvalid
+		errInvalidFormat         *apperror.ErrInvalidFormat
 	)
 
 	return func(c *gin.Context) {
@@ -64,6 +65,9 @@ func ErrorMiddleware() gin.HandlerFunc {
 			case errors.As(ginErr.Err, &errFieldValidation):
 				messages := strings.Split(ginErr.Err.Error(), "|")
 				resp.Errors = messages
+				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
+			case errors.As(ginErr.Err, &errInvalidFormat):
+				resp.Errors = append(resp.Errors, ginErr.Err.Error())
 				c.AbortWithStatusJSON(http.StatusBadRequest, resp)
 			// case errors.As(ginErr.Err, &errLengthValidation):
 			// 	resp.Errors = append(resp.Errors, ginErr.Err.Error())

@@ -14,6 +14,11 @@ type forgotPasswordRepository struct {
 	db *gorm.DB
 }
 
+// Count implements interfaces.ForgotPasswordRepository.
+func (repo *forgotPasswordRepository) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.ForgotPasswordToken](ctx, repo.db, &models.ForgotPasswordToken{})
+}
+
 // UpdateUserPassword implements interfaces.ForgotPasswordRepository.
 func (repo *forgotPasswordRepository) UpdateUserPassword(ctx context.Context, token *models.ForgotPasswordToken, password string) (*models.User, error) {
 	var user *models.User

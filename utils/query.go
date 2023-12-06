@@ -38,3 +38,13 @@ func GetById[T any](ctx context.Context, db *gorm.DB, id uint) (entity *T, err e
 	}
 	return entity, nil
 }
+
+func CountTotalItems[T any](ctx context.Context, db *gorm.DB, entity *T) (uint, error) {
+	var res int64 = 0
+	err := db.WithContext(ctx).Model(&entity).Count(&res).Error
+	out := uint(res)
+	if err != nil {
+		return out, err
+	}
+	return out, nil
+}

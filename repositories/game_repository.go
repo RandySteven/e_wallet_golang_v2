@@ -14,6 +14,11 @@ type gameRepository struct {
 	db *gorm.DB
 }
 
+// Count implements interfaces.GameRepository.
+func (repo *gameRepository) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.Game](ctx, repo.db, &models.Game{})
+}
+
 // BeginTrx implements interfaces.GameRepository.
 func (*gameRepository) BeginTrx(ctx context.Context) interfaces.GameRepository {
 	panic("unimplemented")

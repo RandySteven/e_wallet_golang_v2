@@ -75,6 +75,11 @@ type ErrTokenAlreadyUsed struct {
 	Err error
 }
 
+type ErrInvalidFormat struct {
+	Message string
+	Err     error
+}
+
 func (e *ErrSenderAndReceiverSame) Error() string {
 	return e.Message
 }
@@ -121,4 +126,8 @@ func (e *ErrTokenInvalid) Error() string {
 
 func (e *ErrFieldValidation) Error() string {
 	return strings.Join(e.Message, "|")
+}
+
+func (e *ErrInvalidFormat) Error() string {
+	return e.Message
 }

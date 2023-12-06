@@ -3,6 +3,7 @@ package repositories
 import (
 	"assignment_4/entities/models"
 	"assignment_4/interfaces"
+	"assignment_4/utils"
 	"context"
 
 	"gorm.io/gorm"
@@ -10,6 +11,11 @@ import (
 
 type sourceOfFundRepo struct {
 	db *gorm.DB
+}
+
+// Count implements interfaces.SourceOfFundRepository.
+func (repo *sourceOfFundRepo) Count(ctx context.Context) (uint, error) {
+	return utils.CountTotalItems[models.SourceOfFund](ctx, repo.db, &models.SourceOfFund{})
 }
 
 // BeginTrx implements interfaces.SourceOfFundRepository.

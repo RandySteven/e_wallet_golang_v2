@@ -18,10 +18,8 @@ type TransactionDetailResponse struct {
 	TransactionType string          `json:"transaction_type"`
 	SenderName      string          `json:"sender_name,omitempty"`
 	SenderWallet    string          `json:"sender_wallet,omitempty"`
-	ReceiverName    string          `json:"receiver_name,omitempty"`
-	ReceiverWallet  string          `json:"receiver_wallet,omitempty"`
-	TopupUser       string          `json:"topup_user,omitempty"`
-	TopupWallet     string          `json:"topup_wallet,omitempty"`
+	ReceipentName   string          `json:"receipent_name,omitempty"`
+	ReceipentWallet string          `json:"receipent_wallet,omitempty"`
 	Description     string          `json:"description"`
 	Amount          decimal.Decimal `json:"amount"`
 }

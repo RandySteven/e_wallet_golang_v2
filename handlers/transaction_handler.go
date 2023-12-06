@@ -11,6 +11,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -33,6 +34,21 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 		return
 	}
 
+	if query.StartDate != "" || query.EndDate != "" {
+		startDate, err := time.Parse("2006-01-02", query.StartDate)
+		if err != nil {
+			c.Error(&apperror.ErrInvalidFormat{Message: "Date must in format YYYY-MM-dd"})
+			return
+		}
+		endDate, err := time.Parse("2006-01-02", query.EndDate)
+		if err != nil {
+			c.Error(&apperror.ErrInvalidFormat{Message: "Date must in format YYYY-MM-dd"})
+			return
+		}
+		query.StartDate = startDate.Format("2006-01-02")
+		query.EndDate = endDate.Format("2006-01-02")
+	}
+
 	transactions, err := handler.uscase.GetAllTransactionsRecords(ctx, &query)
 	if err != nil {
 		c.Error(err)
@@ -50,15 +66,14 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 
 		if transaction.ReceiverID == transaction.SenderID {
 			transactionDetail.TransactionType = enums.Topup
-			transactionDetail.TopupUser = transaction.Sender.User.Name
-			transactionDetail.TopupWallet = transaction.Sender.Number
 		} else {
 			transactionDetail.TransactionType = enums.Transfer
 			transactionDetail.SenderName = transaction.Sender.User.Name
 			transactionDetail.SenderWallet = transaction.Sender.Number
-			transactionDetail.ReceiverName = transaction.Receiver.User.Name
-			transactionDetail.ReceiverWallet = transaction.Receiver.Number
 		}
+
+		transactionDetail.ReceipentName = transaction.Receiver.User.Name
+		transactionDetail.ReceipentWallet = transaction.Receiver.Number
 
 		transactionDetails = append(transactionDetails, transactionDetail)
 	}
