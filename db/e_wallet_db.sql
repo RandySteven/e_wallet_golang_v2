@@ -22,6 +22,9 @@ VALUES
     ('Other');
 
 
+SELECT COUNT(*) FROM transactions 
+WHERE sender_id = 3 OR receiver_id = 3;
+
 SELECT * FROM "transactions" 
 WHERE "transactions"."deletd_at" IS NULL 
 ORDER BY amount ASC 
@@ -55,3 +58,5 @@ SELECT * FROM games;
 
 UPDATE games 
 SET win_box_id = 1;
+
+SELECT * FROM "transactions" WHERE (sender_id = 2 OR receiver_id = 2) AND "transactions"."deletd_at" IS NULL ORDER BY "amount" LIMIT 10

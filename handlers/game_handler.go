@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"assignment_4/apperror"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
 	"assignment_4/interfaces"
+	"assignment_4/utils"
 	"context"
 	"net/http"
 	"strconv"
@@ -20,19 +22,20 @@ type GameHandler struct {
 func (handler *GameHandler) ChooseBox(c *gin.Context) {
 	var (
 		requestId    = uuid.NewString()
-		ctx          = context.WithValue(c.Request.Context(), "requestId", requestId)
+		ctx          = context.WithValue(c.Request.Context(), "request_id", requestId)
 		chooseReward *req.ChooseReward
 	)
 
 	if err := c.ShouldBind(&chooseReward); err != nil {
-		c.Error(err)
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(&chooseReward, err)}
+		c.Error(errBadRequest)
 		return
 	}
 
 	getGameId := c.Param("id")
 	gameId, err := strconv.Atoi(getGameId)
 	if err != nil {
-		c.Error(err)
+		c.Error(&apperror.ErrInvalidFormat{Message: "invalid id format"})
 		return
 	}
 
@@ -51,7 +54,7 @@ func (handler *GameHandler) ChooseBox(c *gin.Context) {
 func (handler *GameHandler) PlayGame(c *gin.Context) {
 	var (
 		requestId = uuid.NewString()
-		ctx       = context.WithValue(c.Request.Context(), "requestId", requestId)
+		ctx       = context.WithValue(c.Request.Context(), "request_id", requestId)
 	)
 
 	getUserId, _ := c.Get("x-user-id")

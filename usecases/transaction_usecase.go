@@ -31,7 +31,10 @@ func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context
 	if err != nil {
 		return nil, err
 	}
-	totalItems, err := usecase.transactionRepo.Count(ctx)
+	totalItems, err := usecase.transactionRepo.GetTransactionCountBasedUserId(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
 
 	var transactionDetails = []res.TransactionDetailResponse{}
 	for _, transaction := range transactions {

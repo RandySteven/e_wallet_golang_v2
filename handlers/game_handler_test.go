@@ -1,10 +1,14 @@
 package handlers_test
 
 import (
+	"assignment_4/apperror"
 	"assignment_4/entities/models"
+	"assignment_4/entities/payload/req"
 	"assignment_4/handlers"
 	middleware "assignment_4/middlewares"
 	"assignment_4/mocks"
+	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -87,6 +91,93 @@ func (suite *GameHandlerTestSuite) TestPlayGameInternalServer() {
 		Return(nil, errors.New("mock error"))
 
 	suite.router.POST("/v1/games", suite.gameHandler.PlayGame)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusInternalServerError, w.Code)
+}
+
+func (suite *GameHandlerTestSuite) TestChooseGameRewards() {
+	chooseReward := &req.ChooseReward{
+		BoxID: 12,
+	}
+
+	chooseRewardRequest, _ := json.Marshal(chooseReward)
+	req, _ := http.NewRequest(http.MethodPut, "/v1/games/1", bytes.NewBuffer(chooseRewardRequest))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.gameUsecase.On("ChooseReward", mock.Anything, mock.AnythingOfType("*req.ChooseReward")).
+		Return(&games[0], nil)
+
+	suite.router.PUT("/v1/games/:id", suite.gameHandler.ChooseBox)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusOK, w.Code)
+}
+
+func (suite *GameHandlerTestSuite) TestChooseGameRewardsBadRequest() {
+	chooseReward := &req.ChooseReward{}
+
+	chooseRewardRequest, _ := json.Marshal(chooseReward)
+	req, _ := http.NewRequest(http.MethodPut, "/v1/games/1", bytes.NewBuffer(chooseRewardRequest))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.router.PUT("/v1/games/:id", suite.gameHandler.ChooseBox)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusBadRequest, w.Code)
+}
+
+func (suite *GameHandlerTestSuite) TestChooseGameRewardsBadRequestGameId() {
+	chooseReward := &req.ChooseReward{
+		BoxID: 1,
+	}
+
+	chooseRewardRequest, _ := json.Marshal(chooseReward)
+	req, _ := http.NewRequest(http.MethodPut, "/v1/games/A", bytes.NewBuffer(chooseRewardRequest))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.router.PUT("/v1/games/:id", suite.gameHandler.ChooseBox)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusBadRequest, w.Code)
+}
+
+func (suite *GameHandlerTestSuite) TestChooseGameRewardsGameIdNotFound() {
+	chooseReward := &req.ChooseReward{
+		BoxID: 12,
+	}
+
+	chooseRewardRequest, _ := json.Marshal(chooseReward)
+	req, _ := http.NewRequest(http.MethodPut, "/v1/games/1", bytes.NewBuffer(chooseRewardRequest))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.gameUsecase.On("ChooseReward", mock.Anything, mock.AnythingOfType("*req.ChooseReward")).
+		Return(nil, &apperror.ErrDataNotFound{Data: "game"})
+
+	suite.router.PUT("/v1/games/:id", suite.gameHandler.ChooseBox)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusNotFound, w.Code)
+}
+
+func (suite *GameHandlerTestSuite) TestChooseGameRewardsInternalServerError() {
+	chooseReward := &req.ChooseReward{
+		BoxID: 12,
+	}
+
+	chooseRewardRequest, _ := json.Marshal(chooseReward)
+	req, _ := http.NewRequest(http.MethodPut, "/v1/games/1", bytes.NewBuffer(chooseRewardRequest))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.gameUsecase.On("ChooseReward", mock.Anything, mock.AnythingOfType("*req.ChooseReward")).
+		Return(nil, errors.New("mock error"))
+
+	suite.router.PUT("/v1/games/:id", suite.gameHandler.ChooseBox)
 	suite.router.ServeHTTP(w, req)
 
 	suite.Equal(http.StatusInternalServerError, w.Code)

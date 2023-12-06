@@ -1,4 +1,15 @@
 mode: set
+assignment_4/handlers/game_handler.go:22.55,29.52 2 1
+assignment_4/handlers/game_handler.go:35.2,37.16 3 1
+assignment_4/handlers/game_handler.go:42.2,45.16 3 1
+assignment_4/handlers/game_handler.go:50.2,50.29 1 1
+assignment_4/handlers/game_handler.go:29.52,33.3 3 1
+assignment_4/handlers/game_handler.go:37.16,40.3 2 1
+assignment_4/handlers/game_handler.go:45.16,48.3 2 1
+assignment_4/handlers/game_handler.go:54.54,67.16 6 1
+assignment_4/handlers/game_handler.go:72.2,72.34 1 1
+assignment_4/handlers/game_handler.go:67.16,70.3 2 1
+assignment_4/handlers/game_handler.go:75.66,77.2 1 1
 assignment_4/handlers/transaction_handler.go:24.78,35.50 4 1
 assignment_4/handlers/transaction_handler.go:50.2,51.16 2 1
 assignment_4/handlers/transaction_handler.go:56.2,61.29 2 1
@@ -47,14 +58,3 @@ assignment_4/handlers/user_handler.go:140.48,145.3 3 1
 assignment_4/handlers/user_handler.go:148.16,151.3 2 0
 assignment_4/handlers/user_handler.go:158.16,161.3 2 1
 assignment_4/handlers/user_handler.go:176.66,178.2 1 1
-assignment_4/handlers/game_handler.go:20.55,27.52 2 0
-assignment_4/handlers/game_handler.go:32.2,34.16 3 0
-assignment_4/handlers/game_handler.go:39.2,42.16 3 0
-assignment_4/handlers/game_handler.go:47.2,47.29 1 0
-assignment_4/handlers/game_handler.go:27.52,30.3 2 0
-assignment_4/handlers/game_handler.go:34.16,37.3 2 0
-assignment_4/handlers/game_handler.go:42.16,45.3 2 0
-assignment_4/handlers/game_handler.go:51.54,64.16 6 1
-assignment_4/handlers/game_handler.go:69.2,69.34 1 1
-assignment_4/handlers/game_handler.go:64.16,67.3 2 1
-assignment_4/handlers/game_handler.go:72.66,74.2 1 1

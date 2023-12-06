@@ -24,6 +24,11 @@ func (usecase *gameUsecase) ChooseReward(ctx context.Context, chooseReward *req.
 	if err != nil {
 		return nil, err
 	}
+
+	if game == nil {
+		return nil, &apperror.ErrDataNotFound{Data: "game"}
+	}
+
 	if game.WinBoxID != 0 {
 		return nil, &apperror.ErrInvalidRequest{Field: enums.BoxId}
 	}

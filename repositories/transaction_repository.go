@@ -18,6 +18,18 @@ type transactionRepository struct {
 	db *gorm.DB
 }
 
+// GetTransactionCountBasedUserId implements interfaces.TransactionRepository.
+func (repo *transactionRepository) GetTransactionCountBasedUserId(ctx context.Context, id uint) (uint, error) {
+	var res int64 = 0
+	err := repo.db.WithContext(ctx).Model(&models.Transaction{}).Where("receiver_id = ? OR sender_id = ?", id, id).Count(&res).Error
+	out := uint(res)
+	if err != nil {
+		return out, err
+	}
+	return out, nil
+
+}
+
 // Count implements interfaces.TransactionRepository.
 func (repo *transactionRepository) Count(ctx context.Context) (uint, error) {
 	return utils.CountTotalItems[models.Transaction](ctx, repo.db, &models.Transaction{})

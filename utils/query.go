@@ -50,7 +50,7 @@ func CountTotalItems[T any](ctx context.Context, db *gorm.DB, entity *T) (uint, 
 	return out, nil
 }
 
-func CountTotalItemsCondition[T any](ctx context.Context, db *gorm.DB, entity *T, field, value string) (uint, error) {
+func CountTotalItemsCondition[T any](ctx context.Context, db *gorm.DB, entity *T, field string, value string) (uint, error) {
 	var res int64 = 0
 	condition := fmt.Sprintf("%s = ?", field)
 	err := db.WithContext(ctx).Model(&entity).Count(&res).Where(condition, value).Error
