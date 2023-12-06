@@ -28,7 +28,9 @@ func (handler *UserHandler) ForgotPassword(c *gin.Context) {
 	)
 
 	if err := c.ShouldBind(&forgotPassword); err != nil {
-		c.Error(err)
+		errorBad := &apperror.ErrFieldValidation{Message: utils.Validate(&forgotPassword, err)}
+
+		c.Error(errorBad)
 		return
 	}
 
@@ -55,7 +57,8 @@ func (handler *UserHandler) ResetPassword(c *gin.Context) {
 	)
 
 	if err := c.ShouldBind(&newPassword); err != nil {
-		c.Error(err)
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(&newPassword, err)}
+		c.Error(errBadRequest)
 		return
 	}
 

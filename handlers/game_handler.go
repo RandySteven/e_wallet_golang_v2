@@ -66,7 +66,7 @@ func (handler *GameHandler) PlayGame(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, game)
+	c.JSON(http.StatusCreated, game)
 }
 
 func NewGameHandler(usecase interfaces.GameUsecase) *GameHandler {

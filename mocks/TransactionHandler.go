@@ -13,11 +13,6 @@ type TransactionHandler struct {
 	mock.Mock
 }
 
-// GetAllHistoryUserTransactions provides a mock function with given fields: c
-func (_m *TransactionHandler) GetAllHistoryUserTransactions(c *gin.Context) {
-	_m.Called(c)
-}
-
 // GetAllTransactionsRecords provides a mock function with given fields: c
 func (_m *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 	_m.Called(c)

@@ -58,6 +58,29 @@ func (_m *GameRepository) Count(ctx context.Context) (uint, error) {
 	return r0, r1
 }
 
+// CreateRewardTransaction provides a mock function with given fields: ctx, game
+func (_m *GameRepository) CreateRewardTransaction(ctx context.Context, game *models.Game) (*models.Game, error) {
+	ret := _m.Called(ctx, game)
+
+	var r0 *models.Game
+	if rf, ok := ret.Get(0).(func(context.Context, *models.Game) *models.Game); ok {
+		r0 = rf(ctx, game)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Game)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *models.Game) error); ok {
+		r1 = rf(ctx, game)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindAll provides a mock function with given fields: ctx
 func (_m *GameRepository) FindAll(ctx context.Context) ([]models.Game, error) {
 	ret := _m.Called(ctx)
