@@ -24,15 +24,15 @@ type Game struct {
 	UpdatedAt time.Time `gorm:"not null;default:current_timestamp"`
 	DeletedAt gorm.DeletedAt
 
-	Box1 *Box `gorm:"foreignKey:BoxID1;references:ID"`
-	Box2 *Box `gorm:"foreignKey:BoxID2;references:ID"`
-	Box3 *Box `gorm:"foreignKey:BoxID3;references:ID"`
-	Box4 *Box `gorm:"foreignKey:BoxID4;references:ID"`
-	Box5 *Box `gorm:"foreignKey:BoxID5;references:ID"`
-	Box6 *Box `gorm:"foreignKey:BoxID6;references:ID"`
-	Box7 *Box `gorm:"foreignKey:BoxID7;references:ID"`
-	Box8 *Box `gorm:"foreignKey:BoxID8;references:ID"`
-	Box9 *Box `gorm:"foreignKey:BoxID9;references:ID"`
+	Box1 *Box `gorm:"foreignKey:BoxID1;references:ID" json:"omitempty"`
+	Box2 *Box `gorm:"foreignKey:BoxID2;references:ID" json:"omitempty"`
+	Box3 *Box `gorm:"foreignKey:BoxID3;references:ID" json:"omitempty"`
+	Box4 *Box `gorm:"foreignKey:BoxID4;references:ID" json:"omitempty"`
+	Box5 *Box `gorm:"foreignKey:BoxID5;references:ID" json:"omitempty"`
+	Box6 *Box `gorm:"foreignKey:BoxID6;references:ID" json:"omitempty"`
+	Box7 *Box `gorm:"foreignKey:BoxID7;references:ID" json:"omitempty"`
+	Box8 *Box `gorm:"foreignKey:BoxID8;references:ID" json:"omitempty"`
+	Box9 *Box `gorm:"foreignKey:BoxID9;references:ID" json:"omitempty"`
 
-	WinBox *Box `gorm:"foreignKey:WinBoxID;references:ID"`
+	WinBox *Box `gorm:"foreignKey:WinBoxID;references:ID" json:"omitempty"`
 }

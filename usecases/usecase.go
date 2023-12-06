@@ -15,5 +15,6 @@ func NewUsecase(repo configs.Repository) *Usecase {
 	return &Usecase{
 		UserUsecase:        NewUserUsecase(repo.UserRepository, repo.WalletRepository, repo.ForgotPasswordRepository),
 		TransactionUsecase: NewTransactionUsecase(repo.SourceOfFundRepository, repo.WalletRepository, repo.TransactionRepository, repo.UserRepository),
+		GameUsecase:        NewGameUsecase(repo.GameRepository, repo.UserRepository, repo.TransactionRepository, repo.WalletRepository, repo.BoxRepository),
 	}
 }
