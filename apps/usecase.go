@@ -1,9 +1,9 @@
 package apps
 
 import (
-	"assignment_4/configs"
-	"assignment_4/interfaces"
-	"assignment_4/usecases"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/configs"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interfaces"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/usecases"
 )
 
 type Usecase struct {

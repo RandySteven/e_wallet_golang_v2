@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	"assignment_4/entities/models"
-	"assignment_4/enums"
-	"assignment_4/interfaces"
-	"assignment_4/utils"
 	"context"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/enums"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interfaces"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/utils"
 
 	"gorm.io/gorm"
 )

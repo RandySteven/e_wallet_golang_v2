@@ -1,16 +1,17 @@
 package handlers_test
 
 import (
-	"assignment_4/entities/models"
-	"assignment_4/entities/payload/res"
-	"assignment_4/handlers"
-	middleware "assignment_4/middlewares"
-	"assignment_4/mocks"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/res"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers"
+	middleware "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/middlewares"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/mocks"
 
 	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"

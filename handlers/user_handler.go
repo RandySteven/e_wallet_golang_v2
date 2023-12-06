@@ -1,15 +1,16 @@
 package handlers
 
 import (
-	"assignment_4/apperror"
-	"assignment_4/entities/models"
-	"assignment_4/entities/payload/req"
-	"assignment_4/entities/payload/res"
-	"assignment_4/interfaces"
-	"assignment_4/utils"
 	"context"
 	"net/http"
 	"strconv"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/req"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/res"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interfaces"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

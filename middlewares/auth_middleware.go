@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"assignment_4/auth"
-	"assignment_4/entities/payload/res"
 	"net/http"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/auth"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/res"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

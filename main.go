@@ -1,7 +1,6 @@
 package main
 
 import (
-	middleware "assignment_4/middlewares"
 	"context"
 	"log"
 	"net/http"
@@ -9,6 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	middleware "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"

@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"assignment_4/apperror"
-	"assignment_4/entities/payload/res"
 	"errors"
 	"net/http"
 	"strings"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/res"
 
 	"github.com/gin-gonic/gin"
 )

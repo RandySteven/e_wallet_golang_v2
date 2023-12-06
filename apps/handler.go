@@ -1,9 +1,9 @@
 package apps
 
 import (
-	"assignment_4/configs"
-	"assignment_4/handlers"
-	"assignment_4/interfaces"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/configs"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interfaces"
 )
 
 type (

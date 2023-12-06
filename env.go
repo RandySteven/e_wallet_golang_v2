@@ -1,13 +1,14 @@
 package main
 
 import (
-	"assignment_4/apps"
-	"assignment_4/configs"
-	"assignment_4/entities/models"
 	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apps"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/configs"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
 )
 
 func InitConfig() *models.Config {

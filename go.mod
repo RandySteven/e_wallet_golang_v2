@@ -1,4 +1,4 @@
-module assignment_4
+module git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api
 
 go 1.18
 

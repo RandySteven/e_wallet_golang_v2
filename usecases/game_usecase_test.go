@@ -1,15 +1,16 @@
 package usecases_test
 
 import (
-	"assignment_4/apperror"
-	"assignment_4/entities/models"
-	"assignment_4/entities/payload/req"
-	"assignment_4/enums"
-	"assignment_4/mocks"
-	"assignment_4/usecases"
 	"context"
 	"errors"
 	"testing"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/req"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/enums"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/mocks"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/usecases"
 
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"

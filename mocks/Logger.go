@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	logger "assignment_4/logger"
+	logger "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/logger"
 
 	mock "github.com/stretchr/testify/mock"
 )

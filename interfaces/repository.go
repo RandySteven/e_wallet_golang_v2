@@ -1,9 +1,10 @@
 package interfaces
 
 import (
-	"assignment_4/entities"
-	"assignment_4/entities/models"
 	"context"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
 )
 
 type (

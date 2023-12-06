@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"assignment_4/apperror"
-	"assignment_4/entities/models"
-	"assignment_4/entities/payload/req"
-	"assignment_4/enums"
 	"fmt"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/req"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/enums"
 
 	"github.com/go-playground/validator/v10"
 )

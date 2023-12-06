@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"assignment_4/enums"
 	"context"
 	"fmt"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/enums"
 
 	"gorm.io/gorm"
 )

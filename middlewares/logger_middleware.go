@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"assignment_4/logger"
 	"bytes"
 	"io"
 	"io/ioutil"
 	"time"
+
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/logger"
 
 	"github.com/gin-gonic/gin"
 )
