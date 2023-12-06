@@ -111,6 +111,28 @@ func (suite *UserHandlerTestSuite) TestLoginUser() {
 		// assert.Equal(suite.T(), "Success to login user", respBody["Message"])
 		// assert.Equal(suite.T(), userResponse, respBody["Data"])
 	})
+
+	suite.Run("should return 400 failed to login because email field is missing", func() {
+		loginRequest := &req.UserLoginRequest{
+			Password: "test_1234",
+		}
+
+		loginRequestBody, err := json.Marshal(loginRequest)
+		assert.NoError(suite.T(), err)
+
+		req, err := http.NewRequest("POST", "/login", bytes.NewBuffer(loginRequestBody))
+		req.Header.Set("Content-Type", "application/json")
+		assert.NoError(suite.T(), err)
+
+		w := httptest.NewRecorder()
+
+		suite.router.POST("/login", suite.userHandler.LoginUser)
+		suite.router.ServeHTTP(w, req)
+
+		suite.T().Log(w.Body)
+		assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
+
+	})
 }
 
 // Test RegisterUser method

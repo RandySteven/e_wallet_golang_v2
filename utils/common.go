@@ -3,19 +3,18 @@ package utils
 import (
 	"fmt"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
-func Validate(obj interface{}) []string {
-	validate := validator.New()
-	err := validate.Struct(obj)
+func Validate(obj any, err error) []string {
+	var errBadRequests []string
+
 	if err != nil {
-		var errs = make([]string, 0)
-		for _, currErr := range err.(validator.ValidationErrors) {
-			errMsg := fmt.Sprintf("%s field is %s", currErr.Field(), currErr.ActualTag())
-			errs = append(errs, errMsg)
+		for _, fieldErr := range err.(validator.ValidationErrors) {
+			errMsg := fmt.Sprintf("%s field is %s", fieldErr.Field(), fieldErr.ActualTag())
+			errBadRequests = append(errBadRequests, errMsg)
 		}
-		return errs
 	}
-	return nil
+
+	return errBadRequests
 }

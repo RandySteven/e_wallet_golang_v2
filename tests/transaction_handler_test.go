@@ -5,6 +5,7 @@ import (
 	"assignment_4/handlers"
 	middleware "assignment_4/middlewares"
 	"assignment_4/mocks"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -94,5 +95,62 @@ func (suite *TransactionHandlerTestSuite) TestDoTransfer() {
 
 	suite.Run("should return 500 failed to create transfer", func() {
 
+	})
+}
+
+func (suite *TransactionHandlerTestSuite) TestDoTopup() {
+	// suite.Run("should return 201 after success to top up", func() {
+	// 	request := `{
+	// 		"amount": "10000",
+	// 		"source_of_fund": "Bank Transfer"
+	// 	}`
+
+	// 	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
+	// 	req.Header.Set("Content-Type", "application/json")
+	// 	w := httptest.NewRecorder()
+
+	// 	suite.transactionUsecase.
+	// 		On("CreateTopupTransaction", mock.Anything, mock.AnythingOfType("*req.TopupRequest")).
+	// 		Return(&transactions[1], nil)
+
+	// 	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
+	// 	suite.router.ServeHTTP(w, req)
+
+	// 	suite.Equal(http.StatusCreated, w.Code)
+	// })
+
+	// suite.Run("should return 400 failed to top up", func() {
+	// 	request := `{
+	// 		"amount": "10000"
+	// 	}`
+
+	// 	req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
+	// 	req.Header.Set("Content-Type", "application/json")
+	// 	w := httptest.NewRecorder()
+
+	// 	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
+	// 	suite.router.ServeHTTP(w, req)
+
+	// 	suite.Equal(http.StatusBadRequest, w.Code)
+	// })
+
+	suite.Run("should return 500 due error in db", func() {
+		request := `{
+			"amount": "10000",
+			"source_of_fund": "Bank Transfer"
+		}`
+
+		req, _ := http.NewRequest(http.MethodPost, "/v1/topups", strings.NewReader(request))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+
+		suite.transactionUsecase.
+			On("CreateTopupTransaction", mock.Anything, mock.AnythingOfType("*req.TopupRequest")).
+			Return(nil, errors.New("mock error"))
+
+		suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
+		suite.router.ServeHTTP(w, req)
+
+		suite.Equal(http.StatusInternalServerError, w.Code)
 	})
 }

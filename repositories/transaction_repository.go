@@ -27,8 +27,8 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 		desc = true
 	}
 	sql := repo.db.WithContext(ctx).Model(&models.Transaction{}).
-		Preload("Receiver").
-		Preload("Sender").
+		Preload("Receiver.User").
+		Preload("Sender.User").
 		Offset((page - 1) * limit)
 
 	if query.SortedBy != "" {
@@ -38,7 +38,8 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 		})
 	}
 
-	err := sql.Find(&transactions).
+	err := sql.
+		Find(&transactions).
 		Error
 	if err != nil {
 		return nil, err

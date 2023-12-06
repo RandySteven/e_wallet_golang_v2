@@ -109,7 +109,7 @@ func (handler *UserHandler) LoginUser(c *gin.Context) {
 		login     *req.UserLoginRequest
 	)
 	if err := c.ShouldBind(&login); err != nil {
-		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(login)}
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(&login, err)}
 		c.Error(errBadRequest)
 		return
 	}
@@ -135,7 +135,7 @@ func (handler *UserHandler) RegisterUser(c *gin.Context) {
 	)
 
 	if err := c.ShouldBind(&register); err != nil {
-		errorBad := &apperror.ErrFieldValidation{Message: utils.Validate(register)}
+		errorBad := &apperror.ErrFieldValidation{Message: utils.Validate(&register, err)}
 
 		c.Error(errorBad)
 		return

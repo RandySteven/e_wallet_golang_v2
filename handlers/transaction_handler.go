@@ -5,6 +5,7 @@ import (
 	"assignment_4/entities"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
+	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"assignment_4/utils"
 	"context"
@@ -38,9 +39,39 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 		return
 	}
 
+	var transactionDetails []res.TransactionDetailResponse
+	for _, transaction := range transactions {
+		transactionDetail := res.TransactionDetailResponse{
+			ID:              transaction.ID,
+			TransactionDate: transaction.CreatedAt,
+			Description:     transaction.Description,
+			Amount:          transaction.Amount,
+		}
+
+		if transaction.ReceiverID == transaction.SenderID {
+			transactionDetail.TransactionType = enums.Topup
+			transactionDetail.TopupUser = transaction.Sender.User.Name
+			transactionDetail.TopupWallet = transaction.Sender.Number
+		} else {
+			transactionDetail.TransactionType = enums.Transfer
+			transactionDetail.SenderName = transaction.Sender.User.Name
+			transactionDetail.SenderWallet = transaction.Sender.Number
+			transactionDetail.ReceiverName = transaction.Receiver.User.Name
+			transactionDetail.ReceiverWallet = transaction.Receiver.Number
+		}
+
+		transactionDetails = append(transactionDetails, transactionDetail)
+	}
+
+	transactionResponse := res.TransactionPaginationResponses{
+		Page:         query.Page,
+		Total:        uint(len(transactionDetails)),
+		Transactions: transactionDetails,
+	}
+
 	resp := res.Response{
 		Message: "Get all transactions",
-		Data:    transactions,
+		Data:    transactionResponse,
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -77,7 +108,7 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 		request   *req.TopupRequest
 	)
 	if err := c.ShouldBind(&request); err != nil {
-		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(request)}
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(&request, err)}
 		c.Error(errBadRequest)
 		return
 	}
@@ -109,7 +140,7 @@ func (handler *TransactionHandler) TransferTransaction(c *gin.Context) {
 		request   *req.TransferRequest
 	)
 	if err := c.ShouldBind(&request); err != nil {
-		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(request)}
+		errBadRequest := &apperror.ErrFieldValidation{Message: utils.Validate(&request, err)}
 		c.Error(errBadRequest)
 		return
 	}

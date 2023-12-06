@@ -84,7 +84,7 @@ func (e *ErrAmountLimit) Error() string {
 }
 
 func (e *ErrLengthValidation) Error() string {
-	return fmt.Sprintf("%s length must less than ", e.Field, e.MaxLength)
+	return fmt.Sprintf("%s length must less than %d", e.Field, e.MaxLength)
 }
 
 func (e *ErrDataNotFound) Error() string {

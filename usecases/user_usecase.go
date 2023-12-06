@@ -79,22 +79,22 @@ func (usecase *userUsecase) ForgotPassword(ctx context.Context, forgot *req.Forg
 
 // GetUserDetail implements interfaces.UserUsecase.
 func (usecase *userUsecase) GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error) {
-	user, err := usecase.userRepo.GetById(ctx, id)
-	if err != nil || user == nil {
-		return nil, &apperror.ErrDataNotFound{Data: "user"}
-	}
+	// user, err := usecase.userRepo.GetById(ctx, id)
+	// if err != nil || user == nil {
+	// 	return nil, &apperror.ErrDataNotFound{Data: "user"}
+	// }
 
-	wallet, err := usecase.walletRepo.GetByUserId(ctx, user.ID)
+	wallet, err := usecase.walletRepo.GetByUserId(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	userDetail := &res.UserDetail{
-		Name:         user.Name,
-		Email:        user.Email,
+		Name:         wallet.User.Name,
+		Email:        wallet.User.Email,
 		WalletNumber: wallet.Number,
 		Balance:      wallet.Balance,
-		Chance:       user.Chance,
+		Chance:       wallet.User.Chance,
 	}
 
 	return userDetail, nil

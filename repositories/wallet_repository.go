@@ -16,8 +16,9 @@ type walletRepository struct {
 func (repo *walletRepository) GetByUserId(ctx context.Context, id uint) (*models.Wallet, error) {
 	var wallet *models.Wallet
 	err := repo.db.WithContext(ctx).Model(&models.Wallet{}).
+		Preload("User").
 		Where("user_id = ?", id).
-		Scan(&wallet).
+		Find(&wallet).
 		Error
 
 	if err != nil {

@@ -5,7 +5,6 @@ import (
 	"assignment_4/entities"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
-	"assignment_4/entities/payload/res"
 	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"context"
@@ -21,17 +20,17 @@ type transactionUsecase struct {
 }
 
 // GetAllTransactionsRecords implements interfaces.TransactionUsecase.
-func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error) {
+func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) ([]models.Transaction, error) {
 	transactions, err := usecase.transactionRepo.GetAllTransactions(ctx, query)
 	if err != nil {
 		return nil, err
 	}
-	transactionPage := &res.TransactionPaginationResponses{
-		Page:         query.Page,
-		Total:        uint(len(transactions)),
-		Transactions: transactions,
-	}
-	return transactionPage, nil
+	// transactionPage := &res.TransactionPaginationResponses{
+	// 	Page:         query.Page,
+	// 	Total:        uint(len(transactions)),
+	// 	Transactions: transactions,
+	// }
+	return transactions, nil
 }
 
 // GetUserHistoryTransactions implements interfaces.TransactionUsecase.
