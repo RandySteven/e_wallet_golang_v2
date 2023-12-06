@@ -9,7 +9,6 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 type Repository struct {
@@ -32,9 +31,7 @@ func NewRepository(config *models.Config) (*Repository, error) {
 		config.DbName,
 	)
 	log.Println(conn)
-	db, err := gorm.Open(postgres.Open(conn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	db, err := gorm.Open(postgres.Open(conn), &gorm.Config{})
 	if err != nil {
 		log.Println("DB error : db.go : ", err)
 		return nil, err
