@@ -24,3 +24,7 @@ const (
 	To          = "to"
 	Description = "description"
 )
+
+const (
+	BoxId = "box id"
+)

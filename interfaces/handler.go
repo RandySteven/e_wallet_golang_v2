@@ -14,7 +14,7 @@ type (
 	TransactionHandler interface {
 		TopupTransaction(c *gin.Context)
 		TransferTransaction(c *gin.Context)
-		GetAllHistoryUserTransactions(c *gin.Context)
+		// GetAllHistoryUserTransactions(c *gin.Context)
 		GetAllTransactionsRecords(c *gin.Context)
 	}
 

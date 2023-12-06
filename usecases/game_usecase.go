@@ -4,7 +4,9 @@ import (
 	"assignment_4/apperror"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
+	"assignment_4/enums"
 	"assignment_4/interfaces"
+	"assignment_4/utils"
 	"context"
 )
 
@@ -22,28 +24,12 @@ func (usecase *gameUsecase) ChooseReward(ctx context.Context, chooseReward *req.
 	if err != nil {
 		return nil, err
 	}
-	//check if box is exists in game
-	var boxId uint = 0
-	switch chooseReward.BoxID {
-	case game.BoxID1:
-		boxId = game.BoxID1
-	case game.BoxID2:
-		boxId = game.BoxID2
-	case game.BoxID3:
-		boxId = game.BoxID3
-	case game.BoxID4:
-		boxId = game.BoxID4
-	case game.BoxID5:
-		boxId = game.BoxID5
-	case game.BoxID6:
-		boxId = game.BoxID6
-	case game.BoxID7:
-		boxId = game.BoxID7
-	case game.BoxID8:
-		boxId = game.BoxID8
-	case game.BoxID9:
-		boxId = game.BoxID9
-	default:
+	if game.WinBoxID != 0 {
+		return nil, &apperror.ErrInvalidRequest{Field: enums.BoxId}
+	}
+
+	boxId, err := utils.ValidateWinBox(game, chooseReward)
+	if err != nil {
 		return nil, err
 	}
 

@@ -36,8 +36,7 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 		Preload("Receiver.User").
 		Preload("Sender.User").
 		Where("sender_id = ? OR receiver_id = ?", walletId, walletId).
-		Offset((page - 1) * limit).
-		Limit(limit)
+		Offset((page - 1) * limit)
 
 	if query.SortedBy != "" {
 		sql.Order(clause.OrderByColumn{
@@ -46,12 +45,19 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 		})
 	}
 
-	err := sql.
-		Find(&transactions).
-		Error
+	if query.StartDate != "" && query.EndDate != "" {
+		sql.Where("created_at BETWEEN ? AND ?", query.StartDate, query.EndDate)
+	}
+
+	if limit != 0 {
+		sql.Limit(limit)
+	}
+
+	err := sql.Find(&transactions).Error
 	if err != nil {
 		return nil, err
 	}
+
 	return transactions, nil
 }
 

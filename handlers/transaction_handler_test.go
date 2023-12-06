@@ -1,7 +1,8 @@
-package tests
+package handlers_test
 
 import (
 	"assignment_4/entities/models"
+	"assignment_4/entities/payload/res"
 	"assignment_4/handlers"
 	middleware "assignment_4/middlewares"
 	"assignment_4/mocks"
@@ -77,21 +78,21 @@ func (suite *TransactionHandlerTestSuite) TestSuccessTransfer() {
 
 }
 
-// func (suite *TransactionHandlerTestSuite) TestFailedBadRequestTransfer() {
-// 	request := `{
-// 		"to": "1000000000001",
-// 		"description": "Ini ya duitnya"
-// 	}`
+func (suite *TransactionHandlerTestSuite) TestFailedBadRequestTransfer() {
+	request := `{
+		"amount": "50000000",
+		"description": "Ini ya duitnya"
+	}`
 
-// 	req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
-// 	req.Header.Set("Content-Type", "application/json")
-// 	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/v1/transfers", strings.NewReader(request))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
 
-// 	suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
-// 	suite.router.ServeHTTP(w, req)
+	suite.router.POST("/v1/transfers", suite.transactionHandler.TransferTransaction)
+	suite.router.ServeHTTP(w, req)
 
-// 	suite.Equal(http.StatusBadRequest, w.Code)
-// }
+	suite.Equal(http.StatusBadRequest, w.Code)
+}
 
 func (suite *TransactionHandlerTestSuite) TestInternalServerErrorTransfer() {
 	request := `{
@@ -168,5 +169,93 @@ func (suite *TransactionHandlerTestSuite) TestDBErrorTopup() {
 	suite.router.POST("/v1/topups", suite.transactionHandler.TopupTransaction)
 	suite.router.ServeHTTP(w, req)
 
+	suite.Equal(http.StatusInternalServerError, w.Code)
+}
+
+func (suite *TransactionHandlerTestSuite) TestGetAllListTransactions() {
+	req, _ := http.NewRequest(http.MethodGet, "/v1/transactions", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	transactionPage := &res.TransactionPaginationResponses{
+		Page:         "1",
+		Total:        1,
+		Transactions: []res.TransactionDetailResponse{},
+	}
+
+	suite.transactionUsecase.
+		On("GetAllTransactionsRecords", mock.Anything, mock.AnythingOfType("*entities.QueryCondition"), uint(0)).
+		Return(transactionPage, nil)
+
+	suite.router.GET("/v1/transactions", suite.transactionHandler.GetAllTransactionsRecords)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log(w.Body)
+	suite.Equal(http.StatusOK, w.Code)
+}
+
+func (suite *TransactionHandlerTestSuite) TestGetAllListTransactionsFilterByDate() {
+	req, _ := http.NewRequest(http.MethodGet, "/v1/transactions", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	q := req.URL.Query()
+	q.Add("start_date", "2023-01-02")
+	q.Add("end_date", "2023-01-03")
+
+	transactionPage := &res.TransactionPaginationResponses{
+		Page:         "1",
+		Total:        1,
+		Transactions: []res.TransactionDetailResponse{},
+	}
+
+	suite.transactionUsecase.
+		On("GetAllTransactionsRecords", mock.Anything, mock.AnythingOfType("*entities.QueryCondition"), uint(0)).
+		Return(transactionPage, nil)
+
+	suite.router.GET("/v1/transactions", suite.transactionHandler.GetAllTransactionsRecords)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log(w.Body)
+	suite.Equal(http.StatusOK, w.Code)
+}
+
+func (suite *TransactionHandlerTestSuite) TestGetAllListTransactionsFailedInvalidStartDate() {
+	req, _ := http.NewRequest(http.MethodGet, "/v1/transactions", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	q := req.URL.Query()
+	q.Add("start_date", "ABCDEF")
+	req.URL.RawQuery = q.Encode()
+
+	suite.router.GET("/v1/transactions", suite.transactionHandler.GetAllTransactionsRecords)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log(w.Body)
+	suite.Equal(http.StatusBadRequest, w.Code)
+}
+
+func (suite *TransactionHandlerTestSuite) TestGetAllListTransactionsFailedInvalidEndDate() {
+	req, _ := http.NewRequest(http.MethodGet, "/v1/transactions", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	q := req.URL.Query()
+	q.Add("start_date", "2023-01-02")
+	q.Add("end_date", "ABCDEF")
+	req.URL.RawQuery = q.Encode()
+
+	suite.router.GET("/v1/transactions", suite.transactionHandler.GetAllTransactionsRecords)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log(w.Body)
+	suite.Equal(http.StatusBadRequest, w.Code)
+}
+
+func (suite *TransactionHandlerTestSuite) TestGetAllListTransactionsInternalServerError() {
+	req, _ := http.NewRequest(http.MethodGet, "/v1/transactions", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.transactionUsecase.
+		On("GetAllTransactionsRecords", mock.Anything, mock.AnythingOfType("*entities.QueryCondition"), uint(0)).
+		Return(nil, errors.New("mock error"))
+
+	suite.router.GET("/v1/transactions", suite.transactionHandler.GetAllTransactionsRecords)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log(w.Body)
 	suite.Equal(http.StatusInternalServerError, w.Code)
 }

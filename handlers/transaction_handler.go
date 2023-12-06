@@ -30,10 +30,7 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 	)
 
 	var query entities.QueryCondition
-	if err := c.ShouldBindQuery(&query); err != nil {
-		c.Error(err)
-		return
-	}
+	c.ShouldBindQuery(&query)
 
 	if query.StartDate != "" || query.EndDate != "" {
 		startDate, err := time.Parse("2006-01-02", query.StartDate)
@@ -61,29 +58,6 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 		Data:    transactionResponse,
 	}
 
-	c.JSON(http.StatusOK, resp)
-}
-
-// GetAllHistoryUserTransactions implements interfaces.TransactionHandler.
-func (handler *TransactionHandler) GetAllHistoryUserTransactions(c *gin.Context) {
-	var (
-		requestId = uuid.NewString()
-		ctx       = context.WithValue(c.Request.Context(), "requestId", requestId)
-	)
-
-	getUserId, _ := c.Get("x-user-id")
-	userId, _ := getUserId.(uint)
-
-	transactions, err := handler.uscase.GetUserHistoryTransactions(ctx, userId)
-	if err != nil {
-		c.Error(err)
-		return
-	}
-
-	resp := res.Response{
-		Message: "Get all user transactions history",
-		Data:    transactions,
-	}
 	c.JSON(http.StatusOK, resp)
 }
 

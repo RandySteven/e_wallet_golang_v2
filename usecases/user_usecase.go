@@ -6,6 +6,7 @@ import (
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
+	"assignment_4/enums"
 	"assignment_4/interfaces"
 	"assignment_4/utils"
 	"context"
@@ -58,7 +59,7 @@ func (usecase *userUsecase) ResetPassword(ctx context.Context, reset *req.Passwo
 func (usecase *userUsecase) ForgotPassword(ctx context.Context, forgot *req.ForgotPasswordRequest) (*models.ForgotPasswordToken, error) {
 	user, err := usecase.userRepo.GetByEmail(ctx, forgot.Email)
 	if err != nil || user == nil {
-		return nil, &apperror.ErrInvalidRequest{Field: "user"}
+		return nil, &apperror.ErrInvalidRequest{Field: enums.Email}
 	}
 
 	currentTime := time.Now()
@@ -79,11 +80,6 @@ func (usecase *userUsecase) ForgotPassword(ctx context.Context, forgot *req.Forg
 
 // GetUserDetail implements interfaces.UserUsecase.
 func (usecase *userUsecase) GetUserDetail(ctx context.Context, id uint) (*res.UserDetail, error) {
-	// user, err := usecase.userRepo.GetById(ctx, id)
-	// if err != nil || user == nil {
-	// 	return nil, &apperror.ErrDataNotFound{Data: "user"}
-	// }
-
 	wallet, err := usecase.walletRepo.GetByUserId(ctx, id)
 	if err != nil {
 		return nil, err
