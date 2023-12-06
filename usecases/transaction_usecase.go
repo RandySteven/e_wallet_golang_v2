@@ -21,8 +21,13 @@ type transactionUsecase struct {
 }
 
 // GetAllTransactionsRecords implements interfaces.TransactionUsecase.
-func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error) {
-	transactions, err := usecase.transactionRepo.GetAllTransactions(ctx, query)
+func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition, userId uint) (*res.TransactionPaginationResponses, error) {
+	wallet, err := usecase.walletRepo.GetByUserId(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	transactions, err := usecase.transactionRepo.GetAllTransactions(ctx, query, wallet.ID)
 	if err != nil {
 		return nil, err
 	}

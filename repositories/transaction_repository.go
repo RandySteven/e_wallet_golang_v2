@@ -24,7 +24,7 @@ func (repo *transactionRepository) Count(ctx context.Context) (uint, error) {
 }
 
 // GetAllTransactions implements interfaces.TransactionRepository.
-func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query *entities.QueryCondition) ([]models.Transaction, error) {
+func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query *entities.QueryCondition, walletId uint) ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	limit, _ := strconv.Atoi(query.Limit)
 	page, _ := strconv.Atoi(query.Page)
@@ -35,6 +35,7 @@ func (repo *transactionRepository) GetAllTransactions(ctx context.Context, query
 	sql := repo.db.WithContext(ctx).Model(&models.Transaction{}).
 		Preload("Receiver.User").
 		Preload("Sender.User").
+		Where("sender_id = ? OR receiver_id = ?", walletId, walletId).
 		Offset((page - 1) * limit).
 		Limit(limit)
 

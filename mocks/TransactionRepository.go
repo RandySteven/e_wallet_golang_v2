@@ -129,13 +129,13 @@ func (_m *TransactionRepository) FindAll(ctx context.Context) ([]models.Transact
 	return r0, r1
 }
 
-// GetAllTransactions provides a mock function with given fields: ctx, query
-func (_m *TransactionRepository) GetAllTransactions(ctx context.Context, query *entities.QueryCondition) ([]models.Transaction, error) {
-	ret := _m.Called(ctx, query)
+// GetAllTransactions provides a mock function with given fields: ctx, query, walletId
+func (_m *TransactionRepository) GetAllTransactions(ctx context.Context, query *entities.QueryCondition, walletId uint) ([]models.Transaction, error) {
+	ret := _m.Called(ctx, query, walletId)
 
 	var r0 []models.Transaction
-	if rf, ok := ret.Get(0).(func(context.Context, *entities.QueryCondition) []models.Transaction); ok {
-		r0 = rf(ctx, query)
+	if rf, ok := ret.Get(0).(func(context.Context, *entities.QueryCondition, uint) []models.Transaction); ok {
+		r0 = rf(ctx, query, walletId)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]models.Transaction)
@@ -143,8 +143,8 @@ func (_m *TransactionRepository) GetAllTransactions(ctx context.Context, query *
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *entities.QueryCondition) error); ok {
-		r1 = rf(ctx, query)
+	if rf, ok := ret.Get(1).(func(context.Context, *entities.QueryCondition, uint) error); ok {
+		r1 = rf(ctx, query, walletId)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -66,13 +66,13 @@ func (_m *TransactionUsecase) CreateTransferTransaction(ctx context.Context, tra
 	return r0, r1
 }
 
-// GetAllTransactionsRecords provides a mock function with given fields: ctx, query
-func (_m *TransactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition) (*res.TransactionPaginationResponses, error) {
-	ret := _m.Called(ctx, query)
+// GetAllTransactionsRecords provides a mock function with given fields: ctx, query, userId
+func (_m *TransactionUsecase) GetAllTransactionsRecords(ctx context.Context, query *entities.QueryCondition, userId uint) (*res.TransactionPaginationResponses, error) {
+	ret := _m.Called(ctx, query, userId)
 
 	var r0 *res.TransactionPaginationResponses
-	if rf, ok := ret.Get(0).(func(context.Context, *entities.QueryCondition) *res.TransactionPaginationResponses); ok {
-		r0 = rf(ctx, query)
+	if rf, ok := ret.Get(0).(func(context.Context, *entities.QueryCondition, uint) *res.TransactionPaginationResponses); ok {
+		r0 = rf(ctx, query, userId)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*res.TransactionPaginationResponses)
@@ -80,8 +80,8 @@ func (_m *TransactionUsecase) GetAllTransactionsRecords(ctx context.Context, que
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *entities.QueryCondition) error); ok {
-		r1 = rf(ctx, query)
+	if rf, ok := ret.Get(1).(func(context.Context, *entities.QueryCondition, uint) error); ok {
+		r1 = rf(ctx, query, userId)
 	} else {
 		r1 = ret.Error(1)
 	}

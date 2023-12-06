@@ -3,6 +3,7 @@ package utils
 import (
 	"assignment_4/enums"
 	"context"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -42,6 +43,17 @@ func GetById[T any](ctx context.Context, db *gorm.DB, id uint) (entity *T, err e
 func CountTotalItems[T any](ctx context.Context, db *gorm.DB, entity *T) (uint, error) {
 	var res int64 = 0
 	err := db.WithContext(ctx).Model(&entity).Count(&res).Error
+	out := uint(res)
+	if err != nil {
+		return out, err
+	}
+	return out, nil
+}
+
+func CountTotalItemsCondition[T any](ctx context.Context, db *gorm.DB, entity *T, field, value string) (uint, error) {
+	var res int64 = 0
+	condition := fmt.Sprintf("%s = ?", field)
+	err := db.WithContext(ctx).Model(&entity).Count(&res).Where(condition, value).Error
 	out := uint(res)
 	if err != nil {
 		return out, err

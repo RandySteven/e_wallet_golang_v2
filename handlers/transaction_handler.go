@@ -23,8 +23,10 @@ type TransactionHandler struct {
 // GetAllTransactionsRecords implements interfaces.TransactionHandler.
 func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 	var (
-		requestId = uuid.NewString()
-		ctx       = context.WithValue(c.Request.Context(), "requestId", requestId)
+		requestId    = uuid.NewString()
+		ctx          = context.WithValue(c.Request.Context(), "requestId", requestId)
+		getUserId, _ = c.Get("x-user-id")
+		userId, _    = getUserId.(uint)
 	)
 
 	var query entities.QueryCondition
@@ -48,7 +50,7 @@ func (handler *TransactionHandler) GetAllTransactionsRecords(c *gin.Context) {
 		query.EndDate = endDate.Format("2006-01-02")
 	}
 
-	transactionResponse, err := handler.uscase.GetAllTransactionsRecords(ctx, &query)
+	transactionResponse, err := handler.uscase.GetAllTransactionsRecords(ctx, &query, userId)
 	if err != nil {
 		c.Error(err)
 		return
