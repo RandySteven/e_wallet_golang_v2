@@ -72,7 +72,7 @@ func (handler *UserHandler) ResetPassword(c *gin.Context) {
 	}
 
 	resp := res.Response{
-		Message: "Forgot password token",
+		Message: "Success updated new password",
 	}
 
 	c.JSON(http.StatusOK, resp)

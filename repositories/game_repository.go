@@ -28,14 +28,14 @@ func (repo *gameRepository) CreateRewardTransaction(ctx context.Context, game *m
 		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
 			Model(&models.Wallet{}).
 			Where("user_id = ?", game.UserID).
-			Scan(&wallet).Error
+			Find(&wallet).Error
 		if err != nil || wallet == nil {
 			return err
 		}
 
 		err = tx.Model(&models.Box{}).
 			Where("id = ?", game.WinBoxID).
-			Scan(&winBox).Error
+			Find(&winBox).Error
 		if err != nil || winBox == nil {
 			return err
 		}

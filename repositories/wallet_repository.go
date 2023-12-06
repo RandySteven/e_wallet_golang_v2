@@ -40,7 +40,7 @@ func (repo *walletRepository) GetByNumber(ctx context.Context, number string) (*
 	var wallet *models.Wallet
 	err := repo.db.WithContext(ctx).Model(&models.Wallet{}).
 		Where("number = ? ", number).
-		Scan(&wallet).
+		Find(&wallet).
 		Error
 	if err != nil {
 		return nil, err

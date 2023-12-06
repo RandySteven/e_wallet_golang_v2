@@ -111,14 +111,14 @@ func (repo *transactionRepository) CreateTransferTransaction(ctx context.Context
 
 		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Model(&models.Wallet{}).
 			Where("id = ?", transaction.SenderID).
-			Scan(&senderWallet).Error
+			Find(&senderWallet).Error
 		if err != nil || senderWallet == nil {
 			return err
 		}
 
 		err = tx.Clauses(clause.Locking{Strength: "UPDATE"}).Model(&models.Wallet{}).
 			Where("id = ?", transaction.ReceiverID).
-			Scan(&receiverWallet).Error
+			Find(&receiverWallet).Error
 		if err != nil || receiverWallet == nil {
 			return err
 		}
@@ -160,7 +160,7 @@ func (repo *transactionRepository) CreateTopupTransaction(ctx context.Context, t
 
 		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Model(&models.Wallet{}).
 			Where("id = ?", transaction.ReceiverID).
-			Scan(&wallet).Error
+			Find(&wallet).Error
 		if err != nil || wallet == nil {
 			return err
 		}
@@ -173,7 +173,7 @@ func (repo *transactionRepository) CreateTopupTransaction(ctx context.Context, t
 			return err
 		}
 
-		err = tx.Create(&transaction).Error
+		err = tx.Save(&transaction).Error
 		if err != nil {
 			return err
 		}

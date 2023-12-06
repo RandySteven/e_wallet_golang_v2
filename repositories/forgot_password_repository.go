@@ -51,7 +51,7 @@ func (repo *forgotPasswordRepository) UpdateUserPassword(ctx context.Context, to
 // GetPasswordTokenByToken implements interfaces.ForgotPasswordRepository.
 func (repo *forgotPasswordRepository) GetPasswordTokenByToken(ctx context.Context, resetToken string) (*models.ForgotPasswordToken, error) {
 	var token *models.ForgotPasswordToken
-	err := repo.db.WithContext(ctx).Where("reset_token = ?", resetToken).Find(&token).Error
+	err := repo.db.WithContext(ctx).Model(&models.ForgotPasswordToken{}).Where("reset_token = ?", resetToken).Find(&token).Error
 	if err != nil {
 		return nil, err
 	}
