@@ -80,6 +80,10 @@ type ErrInvalidFormat struct {
 	Err     error
 }
 
+type ErrLogin struct {
+	Err error
+}
+
 func (e *ErrSenderAndReceiverSame) Error() string {
 	return e.Message
 }
@@ -130,4 +134,8 @@ func (e *ErrFieldValidation) Error() string {
 
 func (e *ErrInvalidFormat) Error() string {
 	return e.Message
+}
+
+func (e *ErrLogin) Error() string {
+	return "email and password didn't match in user"
 }

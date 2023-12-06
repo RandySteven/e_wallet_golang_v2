@@ -105,9 +105,12 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 	if err != nil {
 		return nil, err
 	}
+	if user == nil {
+		return nil, &apperror.ErrLogin{}
+	}
 	isPassValid := utils.IsPasswordValid(user.Password, login.Password)
 	if !isPassValid {
-		return nil, err
+		return nil, &apperror.ErrLogin{}
 	}
 	expTime := time.Now().Add(time.Hour * 1)
 	claims := &auth.JWTClaim{
