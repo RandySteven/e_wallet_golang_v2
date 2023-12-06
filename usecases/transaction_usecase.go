@@ -108,7 +108,7 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, err
 	}
 
-	if transaction.Amount.Mod(decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)).Equal(decimal.NewFromInt(0)) {
+	if transaction.Amount.Equal(decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)) {
 		user, err := usecase.userRepo.GetById(ctx, topup.UserID)
 		if err != nil {
 			return nil, err

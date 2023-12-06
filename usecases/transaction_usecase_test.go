@@ -2,6 +2,7 @@ package usecases_test
 
 import (
 	"assignment_4/apperror"
+	"assignment_4/entities"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
 	"assignment_4/enums"
@@ -15,6 +16,69 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
+
+var transactions = []models.Transaction{
+	{
+		ID:             1,
+		SenderID:       1,
+		ReceiverID:     2,
+		Amount:         decimal.NewFromInt(50000),
+		Description:    "",
+		SourceOfFundID: 5,
+		Sender: &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(60000),
+			UserID:  1,
+			User: &models.User{
+				ID:    1,
+				Name:  "Randy Steven",
+				Email: "randy.steven@gmail.com",
+			},
+		},
+		Receiver: &models.Wallet{
+			ID:      2,
+			Number:  "10000000000002",
+			Balance: decimal.NewFromInt(60000),
+			UserID:  2,
+			User: &models.User{
+				ID:    2,
+				Name:  "Matthew Alfredo",
+				Email: "matthew.alfredo@gmail.com",
+			},
+		},
+	},
+	{
+		ID:             2,
+		SenderID:       1,
+		ReceiverID:     1,
+		Amount:         decimal.NewFromInt(50000),
+		Description:    "",
+		SourceOfFundID: 1,
+		Sender: &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(60000),
+			UserID:  1,
+			User: &models.User{
+				ID:    1,
+				Name:  "Randy Steven",
+				Email: "randy.steven@gmail.com",
+			},
+		},
+		Receiver: &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(60000),
+			UserID:  1,
+			User: &models.User{
+				ID:    1,
+				Name:  "Randy Steven",
+				Email: "randy.steven@gmail.com",
+			},
+		},
+	},
+}
 
 func TestCreateTransferTransaction(t *testing.T) {
 	t.Run("should return success create transfer transaction", func(t *testing.T) {
@@ -680,7 +744,7 @@ func TestCreateTopupTransaction(t *testing.T) {
 		}
 		transaction := &models.Transaction{
 			SenderID:       1,
-			ReceiverID:     2,
+			ReceiverID:     1,
 			Amount:         topupReq.Amount,
 			SourceOfFundID: 5,
 		}
@@ -731,7 +795,7 @@ func TestCreateTopupTransaction(t *testing.T) {
 		}
 		transaction := &models.Transaction{
 			SenderID:       1,
-			ReceiverID:     2,
+			ReceiverID:     1,
 			Amount:         topupReq.Amount,
 			SourceOfFundID: 5,
 		}
@@ -770,6 +834,169 @@ func TestCreateTopupTransaction(t *testing.T) {
 
 		ctx := context.Background()
 		_, err := usecase.CreateTopupTransaction(ctx, topupReq)
+
+		assert.Error(t, err)
+	})
+}
+
+func TestGetAllTransactionsRecords(t *testing.T) {
+	t.Run("should return res transaction pagination", func(t *testing.T) {
+		sourceFundRepo := mocks.SourceOfFundRepository{}
+		walletRepo := mocks.WalletRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		userRepo := mocks.UserRepository{}
+		ctx := context.Background()
+		usecase := usecases.NewTransactionUsecase(
+			&sourceFundRepo,
+			&walletRepo,
+			&transactionRepo,
+			&userRepo,
+		)
+		count := 0
+		wallet := &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(1000000),
+			User: &models.User{
+				ID:     1,
+				Name:   "Randy Steven",
+				Email:  "randy.steven@gmail.com",
+				Chance: 0,
+			},
+		}
+		query := &entities.QueryCondition{
+			Page: "1",
+		}
+
+		walletRepo.On("GetByUserId", mock.Anything, uint(1)).
+			Return(wallet, nil)
+
+		transactionRepo.On("GetAllTransactions",
+			mock.Anything,
+			mock.AnythingOfType("*entities.QueryCondition"),
+			uint(1),
+		).
+			Return(transactions, nil)
+
+		transactionRepo.On("GetTransactionCountBasedUserId",
+			mock.Anything,
+			uint(1),
+		).Return(uint(count), nil)
+
+		res, _ := usecase.GetAllTransactionsRecords(ctx, query, 1)
+
+		assert.Equal(t, query.Page, res.Page)
+	})
+
+	t.Run("should return error while try to get user wallet by user id", func(t *testing.T) {
+		sourceFundRepo := mocks.SourceOfFundRepository{}
+		walletRepo := mocks.WalletRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		userRepo := mocks.UserRepository{}
+		ctx := context.Background()
+		usecase := usecases.NewTransactionUsecase(
+			&sourceFundRepo,
+			&walletRepo,
+			&transactionRepo,
+			&userRepo,
+		)
+		query := &entities.QueryCondition{
+			Page: "1",
+		}
+
+		walletRepo.On("GetByUserId", mock.Anything, uint(1)).
+			Return(nil, errors.New("mock error"))
+
+		_, err := usecase.GetAllTransactionsRecords(ctx, query, 1)
+
+		assert.Error(t, err)
+	})
+
+	t.Run("should return error while get transactions", func(t *testing.T) {
+		sourceFundRepo := mocks.SourceOfFundRepository{}
+		walletRepo := mocks.WalletRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		userRepo := mocks.UserRepository{}
+		ctx := context.Background()
+		usecase := usecases.NewTransactionUsecase(
+			&sourceFundRepo,
+			&walletRepo,
+			&transactionRepo,
+			&userRepo,
+		)
+		wallet := &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(1000000),
+			User: &models.User{
+				ID:     1,
+				Name:   "Randy Steven",
+				Email:  "randy.steven@gmail.com",
+				Chance: 0,
+			},
+		}
+		query := &entities.QueryCondition{
+			Page: "1",
+		}
+
+		walletRepo.On("GetByUserId", mock.Anything, uint(1)).
+			Return(wallet, nil)
+
+		transactionRepo.On("GetAllTransactions",
+			mock.Anything,
+			mock.AnythingOfType("*entities.QueryCondition"),
+			uint(1),
+		).
+			Return(nil, errors.New("mock error"))
+
+		_, err := usecase.GetAllTransactionsRecords(ctx, query, 1)
+
+		assert.Error(t, err)
+	})
+
+	t.Run("should return error while try to get count total transactions", func(t *testing.T) {
+		sourceFundRepo := mocks.SourceOfFundRepository{}
+		walletRepo := mocks.WalletRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		userRepo := mocks.UserRepository{}
+		ctx := context.Background()
+		usecase := usecases.NewTransactionUsecase(
+			&sourceFundRepo,
+			&walletRepo,
+			&transactionRepo,
+			&userRepo,
+		)
+		wallet := &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(1000000),
+			User: &models.User{
+				ID:     1,
+				Name:   "Randy Steven",
+				Email:  "randy.steven@gmail.com",
+				Chance: 0,
+			},
+		}
+		query := &entities.QueryCondition{
+			Page: "1",
+		}
+
+		walletRepo.On("GetByUserId", mock.Anything, uint(1)).
+			Return(wallet, nil)
+
+		transactionRepo.On("GetAllTransactions",
+			mock.Anything,
+			mock.AnythingOfType("*entities.QueryCondition"),
+			uint(1),
+		).
+			Return(transactions, nil)
+
+		transactionRepo.On("GetTransactionCountBasedUserId",
+			mock.Anything,
+			uint(1),
+		).Return(uint(0), errors.New("mock error"))
+
+		_, err := usecase.GetAllTransactionsRecords(ctx, query, 1)
 
 		assert.Error(t, err)
 	})
