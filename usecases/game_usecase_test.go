@@ -438,7 +438,7 @@ func TestChooseReward(t *testing.T) {
 		)
 
 		chooseReward := &req.ChooseReward{
-			GameID: 2,
+			GameID: 1,
 			BoxID:  100,
 		}
 
