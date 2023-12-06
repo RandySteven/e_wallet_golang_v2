@@ -559,6 +559,86 @@ func TestCreateTopupTransaction(t *testing.T) {
 		assert.Equal(t, transaction.Amount, res.Amount)
 	})
 
+	t.Run("should return failed create transaction for top up because top up amount exceed top up limit", func(t *testing.T) {
+		sourceFundRepo := mocks.SourceOfFundRepository{}
+		walletRepo := mocks.WalletRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		userRepo := mocks.UserRepository{}
+		topupReq := &req.TopupRequest{
+			UserID:       1,
+			Amount:       decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT + 1),
+			SourceOfFund: "Bank Transfer",
+		}
+		sourceOfFund := &models.SourceOfFund{
+			ID:     1,
+			Source: "Bank Transfer",
+		}
+		wallet := &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(1000000),
+		}
+		usecase := usecases.NewTransactionUsecase(
+			&sourceFundRepo,
+			&walletRepo,
+			&transactionRepo,
+			&userRepo,
+		)
+
+		walletRepo.On("GetByUserId", mock.Anything, topupReq.UserID).
+			Return(wallet, nil)
+
+		sourceFundRepo.On("GetSourceOfFundBySource", mock.Anything, topupReq.SourceOfFund).
+			Return(sourceOfFund, nil)
+
+		ctx := context.Background()
+		_, err := usecase.CreateTopupTransaction(ctx, topupReq)
+
+		errLimit := &apperror.ErrAmountLimit{Min: decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT), Max: decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)}
+		assert.Error(t, err)
+		assert.Equal(t, errLimit, err)
+	})
+
+	t.Run("should return failed create transaction for top up because top up amount below top up limit", func(t *testing.T) {
+		sourceFundRepo := mocks.SourceOfFundRepository{}
+		walletRepo := mocks.WalletRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		userRepo := mocks.UserRepository{}
+		topupReq := &req.TopupRequest{
+			UserID:       1,
+			Amount:       decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT - 1),
+			SourceOfFund: "Bank Transfer",
+		}
+		sourceOfFund := &models.SourceOfFund{
+			ID:     1,
+			Source: "Bank Transfer",
+		}
+		wallet := &models.Wallet{
+			ID:      1,
+			Number:  "10000000000001",
+			Balance: decimal.NewFromInt(1000000),
+		}
+		usecase := usecases.NewTransactionUsecase(
+			&sourceFundRepo,
+			&walletRepo,
+			&transactionRepo,
+			&userRepo,
+		)
+
+		walletRepo.On("GetByUserId", mock.Anything, topupReq.UserID).
+			Return(wallet, nil)
+
+		sourceFundRepo.On("GetSourceOfFundBySource", mock.Anything, topupReq.SourceOfFund).
+			Return(sourceOfFund, nil)
+
+		ctx := context.Background()
+		_, err := usecase.CreateTopupTransaction(ctx, topupReq)
+
+		errLimit := &apperror.ErrAmountLimit{Min: decimal.NewFromInt(enums.MIN_TOPUP_AMOUNT), Max: decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT)}
+		assert.Error(t, err)
+		assert.Equal(t, errLimit, err)
+	})
+
 	t.Run("should return failed while get wallet by user id error", func(t *testing.T) {
 		sourceFundRepo := mocks.SourceOfFundRepository{}
 		walletRepo := mocks.WalletRepository{}
@@ -735,7 +815,7 @@ func TestCreateTopupTransaction(t *testing.T) {
 		userRepo := mocks.UserRepository{}
 		topupReq := &req.TopupRequest{
 			UserID:       1,
-			Amount:       decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT),
+			Amount:       decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT),
 			SourceOfFund: "Bank Transfer",
 		}
 		sourceOfFund := &models.SourceOfFund{
@@ -777,6 +857,7 @@ func TestCreateTopupTransaction(t *testing.T) {
 		_, err := usecase.CreateTopupTransaction(ctx, topupReq)
 
 		assert.Error(t, err)
+		assert.Equal(t, "mock error", err.Error())
 	})
 
 	t.Run("should return error while try to update user chance", func(t *testing.T) {
@@ -786,7 +867,7 @@ func TestCreateTopupTransaction(t *testing.T) {
 		userRepo := mocks.UserRepository{}
 		topupReq := &req.TopupRequest{
 			UserID:       1,
-			Amount:       decimal.NewFromInt(enums.MAX_TRANSFER_AMOUNT),
+			Amount:       decimal.NewFromInt(enums.MAX_TOPUP_AMOUNT),
 			SourceOfFund: "Bank Transfer",
 		}
 		sourceOfFund := &models.SourceOfFund{
@@ -836,6 +917,7 @@ func TestCreateTopupTransaction(t *testing.T) {
 		_, err := usecase.CreateTopupTransaction(ctx, topupReq)
 
 		assert.Error(t, err)
+		assert.Equal(t, "mock error", err.Error())
 	})
 }
 

@@ -474,12 +474,13 @@ func TestChooseReward(t *testing.T) {
 		gameRepo.On("GetById", mock.Anything, chooseReward.GameID).
 			Return(&games[0], nil)
 
-		gameRepo.On("CreateRewardTransaction", mock.Anything, &games[0]).
+		gameRepo.On("CreateRewardTransaction", mock.Anything, mock.AnythingOfType("*models.Game")).
 			Return(nil, errors.New("mock error"))
 
 		_, err := gameUsecase.ChooseReward(ctx, chooseReward)
 
 		assert.Error(t, err)
+		assert.Equal(t, "mock error", err.Error())
 	})
 }
 
