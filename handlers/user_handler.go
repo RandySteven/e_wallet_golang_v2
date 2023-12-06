@@ -121,6 +121,7 @@ func (handler *UserHandler) LoginUser(c *gin.Context) {
 		c.Error(err)
 		return
 	}
+	c.Header("Authorization", "Bearer "+userRes.Token)
 	resp := &res.Response{
 		Message: "Success to login user",
 		Data:    userRes,

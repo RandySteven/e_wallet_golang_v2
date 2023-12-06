@@ -50,7 +50,7 @@ func NewRepository(config *models.Config) (*Repository, error) {
 
 func (r *Repository) Automigrate() error {
 
-	r.db.Exec("CREATE SEQUENCE my_sequence")
+	r.db.Exec("CREATE SEQUENCE IF NOT EXISTS my_sequence")
 
 	return r.db.AutoMigrate(
 		&models.User{},

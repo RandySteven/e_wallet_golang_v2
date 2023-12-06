@@ -1,5 +1,7 @@
 # assignment-go-rest-api
 
+Postman Documentation Links : https://shorturl.at/HJNQ7
+
 ## Register User A.P.I
 - <b>/v1/register</b>
 ### Register Success
