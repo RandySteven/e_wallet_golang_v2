@@ -2,6 +2,9 @@
 
 Postman Documentation Links : https://shorturl.at/HJNQ7
 
+Coverage : 98.7%
+~[Alt coverage](/img/coverage.png)
+
 ## Register User A.P.I
 - <b>/v1/register</b>
 ### Register Success
