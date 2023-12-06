@@ -450,7 +450,7 @@ func TestChooseReward(t *testing.T) {
 		assert.Equal(t, &apperror.ErrInvalidRequest{Field: enums.BoxId}, err)
 	})
 
-	t.Run("should return success updated reward", func(t *testing.T) {
+	t.Run("should return failed while create reward transaction", func(t *testing.T) {
 		ctx := context.Background()
 		gameRepo := mocks.GameRepository{}
 		userRepo := mocks.UserRepository{}

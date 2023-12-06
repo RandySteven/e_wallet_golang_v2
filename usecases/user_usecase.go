@@ -10,7 +10,6 @@ import (
 	"assignment_4/interfaces"
 	"assignment_4/utils"
 	"context"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -122,9 +121,7 @@ func (usecase *userUsecase) LoginUser(ctx context.Context, login *req.UserLoginR
 	}
 	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenAlgo.SignedString(auth.JWT_KEY)
-	log.Println(string(auth.JWT_KEY))
 	if err != nil {
-		log.Println(err.Error())
 		return nil, err
 	}
 	userResp := res.UserLoginResponse{

@@ -8,6 +8,7 @@ import (
 	"assignment_4/enums"
 	"assignment_4/mocks"
 	"assignment_4/usecases"
+	"assignment_4/utils"
 	"context"
 	"errors"
 	"testing"
@@ -77,6 +78,8 @@ func TestLoginUse(t *testing.T) {
 			Email:    "randy.steven@shopee.com",
 			Password: "test_1234",
 		}
+		pass, _ := utils.HashPassword(user.Password)
+		user.Password = pass
 		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
 
 		userRepo.On("GetByEmail", mock.Anything, userLogin.Email).
@@ -86,7 +89,56 @@ func TestLoginUse(t *testing.T) {
 		result, _ := userusecase.LoginUser(ctx, userLogin)
 
 		assert.NotNil(t, result)
-		t.Log(result)
+	})
+
+	t.Run("failed to login user because password is not same", func(t *testing.T) {
+		walletRepo := &mocks.WalletRepository{}
+		userRepo := &mocks.UserRepository{}
+		forgotPassRepo := &mocks.ForgotPasswordRepository{}
+		userLogin := &req.UserLoginRequest{
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		user := &models.User{
+			Name:     "Randy Steven",
+			Email:    "randy.steven@shopee.com",
+			Password: "test_2345",
+		}
+		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
+
+		userRepo.On("GetByEmail", mock.Anything, userLogin.Email).
+			Return(user, nil)
+
+		ctx := context.Background()
+		_, err := userusecase.LoginUser(ctx, userLogin)
+
+		assert.Error(t, err)
+	})
+
+	t.Run("failed to login user because error get query", func(t *testing.T) {
+		walletRepo := &mocks.WalletRepository{}
+		userRepo := &mocks.UserRepository{}
+		forgotPassRepo := &mocks.ForgotPasswordRepository{}
+		userLogin := &req.UserLoginRequest{
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		user := &models.User{
+			Name:     "Randy Steven",
+			Email:    "randy.steven@shopee.com",
+			Password: "test_1234",
+		}
+		pass, _ := utils.HashPassword(user.Password)
+		user.Password = pass
+		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
+
+		userRepo.On("GetByEmail", mock.Anything, userLogin.Email).
+			Return(nil, errors.New("mock error"))
+
+		ctx := context.Background()
+		_, err := userusecase.LoginUser(ctx, userLogin)
+
+		assert.Error(t, err)
 	})
 }
 
