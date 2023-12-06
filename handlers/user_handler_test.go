@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"assignment_4/apperror"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
 	"assignment_4/entities/payload/res"
@@ -66,6 +67,30 @@ func (suite *UserHandlerTestSuite) TestGetUserById() {
 	suite.T().Log("response : ", w.Body)
 
 	suite.Assert().Equal(http.StatusOK, w.Code)
+}
+
+func (suite *UserHandlerTestSuite) TestGetUserByInvalidId() {
+
+	req, _ := http.NewRequest("GET", "/users/A", nil)
+	w := httptest.NewRecorder()
+
+	suite.router.GET("/users/:id", suite.userHandler.GetUserById)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log("response : ", w.Body)
+
+	suite.Assert().Equal(http.StatusBadRequest, w.Code)
+}
+
+func (suite *UserHandlerTestSuite) TestGetUserNotFound() {
+	req, _ := http.NewRequest("GET", "/users/1", nil)
+	w := httptest.NewRecorder()
+
+	suite.userUsecase.On("GetUserDetail", mock.Anything, uint(1)).Return(nil, &apperror.ErrDataNotFound{Data: "user"})
+	suite.router.GET("/users/:id", suite.userHandler.GetUserById)
+	suite.router.ServeHTTP(w, req)
+	suite.T().Log("response : ", w.Body)
+
+	suite.Assert().Equal(http.StatusNotFound, w.Code)
 }
 
 func (suite *UserHandlerTestSuite) TestGetUserByIdInternalServerError() {

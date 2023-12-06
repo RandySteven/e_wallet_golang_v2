@@ -85,6 +85,10 @@ func (usecase *userUsecase) GetUserDetail(ctx context.Context, id uint) (*res.Us
 		return nil, err
 	}
 
+	if wallet.User == nil {
+		return nil, &apperror.ErrDataNotFound{Data: "user"}
+	}
+
 	userDetail := &res.UserDetail{
 		Name:         wallet.User.Name,
 		Email:        wallet.User.Email,

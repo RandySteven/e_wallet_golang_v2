@@ -86,7 +86,7 @@ func (handler *UserHandler) GetUserById(c *gin.Context) {
 	paramId := c.Param("id")
 	id, err := strconv.Atoi(paramId)
 	if err != nil {
-		c.Error(err)
+		c.Error(&apperror.ErrInvalidFormat{Message: "id invalid format"})
 		return
 	}
 
