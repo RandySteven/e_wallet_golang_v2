@@ -18,6 +18,11 @@ func (_m *GameHandler) ChooseBox(c *gin.Context) {
 	_m.Called(c)
 }
 
+// CurrentUserChance provides a mock function with given fields: c
+func (_m *GameHandler) CurrentUserChance(c *gin.Context) {
+	_m.Called(c)
+}
+
 // PlayGame provides a mock function with given fields: c
 func (_m *GameHandler) PlayGame(c *gin.Context) {
 	_m.Called(c)

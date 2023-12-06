@@ -18,6 +18,11 @@ type gameUsecase struct {
 	boxesRepo       interfaces.BoxRepository
 }
 
+// GetUserCurrentChance implements interfaces.GameUsecase.
+func (usecase *gameUsecase) GetUserCurrentChance(ctx context.Context, userId uint) (*models.User, error) {
+	return usecase.userRepo.GetById(ctx, userId)
+}
+
 // ChooseReward implements interfaces.GameUsecase.
 func (usecase *gameUsecase) ChooseReward(ctx context.Context, chooseReward *req.ChooseReward) (*models.Game, error) {
 	game, err := usecase.gameRepo.GetById(ctx, chooseReward.GameID)

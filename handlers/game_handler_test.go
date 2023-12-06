@@ -182,3 +182,39 @@ func (suite *GameHandlerTestSuite) TestChooseGameRewardsInternalServerError() {
 
 	suite.Equal(http.StatusInternalServerError, w.Code)
 }
+
+func (suite *GameHandlerTestSuite) TestCurrentUserChance() {
+	var userId uint = 0
+	req, _ := http.NewRequest(http.MethodGet, "/v1/games/chances", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	user := &models.User{
+		ID:     1,
+		Name:   "Randy Steven",
+		Email:  "randy.steven@shopee.com",
+		Chance: 1,
+	}
+
+	suite.gameUsecase.On("GetUserCurrentChance", mock.Anything, userId).
+		Return(user, nil)
+
+	suite.router.GET("/v1/games/chances", suite.gameHandler.CurrentUserChance)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusOK, w.Code)
+}
+
+func (suite *GameHandlerTestSuite) TestCurrentUserChanceError() {
+	var userId uint = 0
+	req, _ := http.NewRequest(http.MethodGet, "/v1/games/chances", nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	suite.gameUsecase.On("GetUserCurrentChance", mock.Anything, userId).
+		Return(nil, errors.New("mock error"))
+
+	suite.router.GET("/v1/games/chances", suite.gameHandler.CurrentUserChance)
+	suite.router.ServeHTTP(w, req)
+
+	suite.Equal(http.StatusInternalServerError, w.Code)
+}

@@ -4,6 +4,7 @@ import (
 	"assignment_4/apperror"
 	"assignment_4/entities/models"
 	"assignment_4/entities/payload/req"
+	"assignment_4/entities/payload/res"
 	"assignment_4/interfaces"
 	"assignment_4/utils"
 	"context"
@@ -70,6 +71,29 @@ func (handler *GameHandler) PlayGame(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, game)
+}
+
+func (handler *GameHandler) CurrentUserChance(c *gin.Context) {
+	var (
+		requestId = uuid.NewString()
+		ctx       = context.WithValue(c.Request.Context(), "request_id", requestId)
+	)
+
+	getUserId, _ := c.Get("x-user-id")
+	userId, _ := getUserId.(uint)
+
+	userChance, err := handler.usecase.GetUserCurrentChance(ctx, userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	resp := res.Response{
+		Message: "Get user current chance",
+		Data:    userChance.Chance,
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 func NewGameHandler(usecase interfaces.GameUsecase) *GameHandler {

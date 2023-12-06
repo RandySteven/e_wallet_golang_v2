@@ -40,6 +40,29 @@ func (_m *GameUsecase) ChooseReward(ctx context.Context, chooseReward *req.Choos
 	return r0, r1
 }
 
+// GetUserCurrentChance provides a mock function with given fields: ctx, userId
+func (_m *GameUsecase) GetUserCurrentChance(ctx context.Context, userId uint) (*models.User, error) {
+	ret := _m.Called(ctx, userId)
+
+	var r0 *models.User
+	if rf, ok := ret.Get(0).(func(context.Context, uint) *models.User); ok {
+		r0 = rf(ctx, userId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = rf(ctx, userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // PlayGame provides a mock function with given fields: ctx, game
 func (_m *GameUsecase) PlayGame(ctx context.Context, game *models.Game) (*models.Game, error) {
 	ret := _m.Called(ctx, game)

@@ -91,6 +91,26 @@ func TestLoginUse(t *testing.T) {
 		assert.NotNil(t, result)
 	})
 
+	t.Run("failed to login user because email not found", func(t *testing.T) {
+		walletRepo := &mocks.WalletRepository{}
+		userRepo := &mocks.UserRepository{}
+		forgotPassRepo := &mocks.ForgotPasswordRepository{}
+		userLogin := &req.UserLoginRequest{
+			Email:    "randy@shopee.com",
+			Password: "test_1234",
+		}
+		userusecase := usecases.NewUserUsecase(userRepo, walletRepo, forgotPassRepo)
+
+		userRepo.On("GetByEmail", mock.Anything, userLogin.Email).
+			Return(nil, nil)
+
+		ctx := context.Background()
+		_, err := userusecase.LoginUser(ctx, userLogin)
+
+		errLogin := &apperror.ErrLogin{}
+		assert.Errorf(t, err, errLogin.Error())
+	})
+
 	t.Run("failed to login user because password is not same", func(t *testing.T) {
 		walletRepo := &mocks.WalletRepository{}
 		userRepo := &mocks.UserRepository{}

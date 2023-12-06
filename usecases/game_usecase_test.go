@@ -482,3 +482,58 @@ func TestChooseReward(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestGetUserCurrentChance(t *testing.T) {
+	t.Run("should return user", func(t *testing.T) {
+		ctx := context.Background()
+		gameRepo := mocks.GameRepository{}
+		userRepo := mocks.UserRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		walletRepo := mocks.WalletRepository{}
+		boxesRepo := mocks.BoxRepository{}
+
+		gameUsecase := usecases.NewGameUsecase(
+			&gameRepo,
+			&userRepo,
+			&transactionRepo,
+			&walletRepo,
+			&boxesRepo,
+		)
+
+		user := &models.User{
+			ID:     1,
+			Name:   "Randy Steven",
+			Email:  "randy.steven@shopee.com",
+			Chance: 1,
+		}
+
+		userRepo.On("GetById", mock.Anything, user.ID).
+			Return(user, nil)
+
+		userRes, _ := gameUsecase.GetUserCurrentChance(ctx, user.ID)
+		assert.Equal(t, user.Chance, userRes.Chance)
+	})
+
+	t.Run("should return error", func(t *testing.T) {
+		ctx := context.Background()
+		gameRepo := mocks.GameRepository{}
+		userRepo := mocks.UserRepository{}
+		transactionRepo := mocks.TransactionRepository{}
+		walletRepo := mocks.WalletRepository{}
+		boxesRepo := mocks.BoxRepository{}
+
+		gameUsecase := usecases.NewGameUsecase(
+			&gameRepo,
+			&userRepo,
+			&transactionRepo,
+			&walletRepo,
+			&boxesRepo,
+		)
+
+		userRepo.On("GetById", mock.Anything, uint(0)).
+			Return(nil, errors.New("mock error"))
+
+		_, err := gameUsecase.GetUserCurrentChance(ctx, uint(0))
+		assert.Error(t, err)
+	})
+}
