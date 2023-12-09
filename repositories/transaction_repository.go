@@ -10,7 +10,6 @@ import (
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interfaces"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/utils"
 
-	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -123,12 +122,9 @@ func (repo *transactionRepository) CreateTransferTransaction(ctx context.Context
 			return err
 		}
 
-		senderWallet.Balance = senderWallet.Balance.Sub(transaction.Amount)
-		receiverWallet.Balance = decimal.Sum(receiverWallet.Balance, transaction.Amount)
-
 		err = tx.Table("wallets").
 			Where("id = ?", senderWallet.ID).
-			Update("balance", senderWallet.Balance).
+			Update("balance", gorm.Expr("balance - ?", transaction.Amount)).
 			Error
 		if err != nil {
 			return err
@@ -136,7 +132,7 @@ func (repo *transactionRepository) CreateTransferTransaction(ctx context.Context
 
 		err = tx.Table("wallets").
 			Where("id = ?", receiverWallet.ID).
-			Update("balance", receiverWallet.Balance).
+			Update("balance", gorm.Expr("balance + ?", transaction.Amount)).
 			Error
 		if err != nil {
 			return err
@@ -165,10 +161,9 @@ func (repo *transactionRepository) CreateTopupTransaction(ctx context.Context, t
 			return err
 		}
 
-		wallet.Balance = decimal.Sum(wallet.Balance, transaction.Amount)
 		err = tx.Table("wallets").
 			Where("id = ?", wallet.ID).
-			Update("balance", wallet.Balance).Error
+			Update("balance", gorm.Expr("balance + ?", transaction.Amount)).Error
 		if err != nil {
 			return err
 		}

@@ -49,6 +49,7 @@ func (usecase *gameUsecase) ChooseReward(ctx context.Context, chooseReward *req.
 	if err != nil {
 		return nil, err
 	}
+
 	return game, nil
 }
 

@@ -7,9 +7,18 @@ SELECT * FROM wallets;
 SELECT * FROM transactions;
 SELECT * FROM boxes;
 
+SELECT * FROM games WHERE user_id = 11;
+SELECT * FROM users WHERE id = 11;
 SELECT * FROM forgot_password_tokens;
+SELECT * FROM wallets WHERE id = 11;
+
 UPDATE wallets
-SET balance = 50000.00;
+SET balance = 0
+WHERE id = 11;
+
+UPDATE users
+SET chance = 0
+WHERE id = 11;
 
 SELECT * FROM source_of_funds;
 

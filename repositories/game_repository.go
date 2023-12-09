@@ -40,6 +40,12 @@ func (repo *gameRepository) CreateRewardTransaction(ctx context.Context, game *m
 			return err
 		}
 
+		err = tx.Model(&models.User{}).Where("id = ?", game.UserID).
+			Update("chance", gorm.Expr("chance - ?", 1)).Error
+		if err != nil {
+			return err
+		}
+
 		wallet.Balance = decimal.Sum(wallet.Balance, winBox.Amount)
 		err = tx.Table("wallets").
 			Where("id = ?", wallet.ID).
