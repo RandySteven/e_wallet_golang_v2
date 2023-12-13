@@ -2,7 +2,7 @@ package apps
 
 import (
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/configs"
-	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers"
+	rest "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers/rest"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interfaces"
 )
 
@@ -19,8 +19,10 @@ func NewHandlers(repo configs.Repository) (*Handlers, error) {
 	usecase := NewUsecase(repo)
 
 	return &Handlers{
-		UserHandler:        handlers.NewUserHandler(usecase.UserUsecase),
-		TransactionHandler: handlers.NewTransactionHandler(usecase.TransactionUsecase),
-		GameHandler:        handlers.NewGameHandler(usecase.GameUsecase),
+		UserHandler:        rest.NewUserHandler(usecase.UserUsecase),
+		TransactionHandler: rest.NewTransactionHandler(usecase.TransactionUsecase),
+		GameHandler:        rest.NewGameHandler(usecase.GameUsecase),
 	}, nil
 }
+
+// func NewGrpcHandler(repo configs.Repository) (*)

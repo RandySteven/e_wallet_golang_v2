@@ -1,4 +1,4 @@
-package handlers_test
+package handlers_rest_test
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/req"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/res"
-	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers"
+	rest "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers/rest"
 	middleware "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/middlewares"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/mocks"
 
@@ -27,13 +27,13 @@ import (
 type UserHandlerTestSuite struct {
 	suite.Suite
 	userUsecase *mocks.UserUsecase
-	userHandler *handlers.UserHandler
+	userHandler *rest.UserHandler
 	router      *gin.Engine
 }
 
 func (suite *UserHandlerTestSuite) SetupTest() {
 	suite.userUsecase = mocks.NewUserUsecase(suite.T())
-	suite.userHandler = handlers.NewUserHandler(suite.userUsecase)
+	suite.userHandler = rest.NewUserHandler(suite.userUsecase)
 	suite.router = gin.Default()
 	suite.router.Use(middleware.ErrorMiddleware())
 }

@@ -1,4 +1,4 @@
-package handlers_test
+package handlers_rest_test
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/req"
-	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers"
+	rest "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers/rest"
 	middleware "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/middlewares"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/mocks"
 
@@ -23,13 +23,13 @@ import (
 type GameHandlerTestSuite struct {
 	suite.Suite
 	gameUsecase *mocks.GameUsecase
-	gameHandler *handlers.GameHandler
+	gameHandler *rest.GameHandler
 	router      *gin.Engine
 }
 
 func (suite *GameHandlerTestSuite) SetupTest() {
 	suite.gameUsecase = mocks.NewGameUsecase(suite.T())
-	suite.gameHandler = handlers.NewGameHandler(suite.gameUsecase)
+	suite.gameHandler = rest.NewGameHandler(suite.gameUsecase)
 	suite.router = gin.Default()
 	suite.router.Use(middleware.ErrorMiddleware())
 }

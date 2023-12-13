@@ -1,4 +1,4 @@
-package handlers_test
+package handlers_rest_test
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/res"
-	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers"
+	rest "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers/rest"
 	middleware "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/middlewares"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/mocks"
 
@@ -22,13 +22,13 @@ import (
 type TransactionHandlerTestSuite struct {
 	suite.Suite
 	transactionUsecase *mocks.TransactionUsecase
-	transactionHandler *handlers.TransactionHandler
+	transactionHandler *rest.TransactionHandler
 	router             *gin.Engine
 }
 
 func (suite *TransactionHandlerTestSuite) SetupTest() {
 	suite.transactionUsecase = mocks.NewTransactionUsecase(suite.T())
-	suite.transactionHandler = handlers.NewTransactionHandler(suite.transactionUsecase)
+	suite.transactionHandler = rest.NewTransactionHandler(suite.transactionUsecase)
 	suite.router = gin.Default()
 	suite.router.Use(middleware.ErrorMiddleware())
 }

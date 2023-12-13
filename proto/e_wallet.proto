@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+package e_wallet;
+
+/*
+Request Definition
+*/
+message UserRegisterRequest {
+    string name = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message UserLoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message TopupRequest {
+    float amount = 1;
+    uint32 source_of_fund_id = 2;
+}
+
+message TransferRequest {
+    string receiver_wallet_id = 2;
+    float amount = 3;
+    string description = 4;
+}
+
+message ForgotPasswordRequest {
+    string email = 1;
+}
+
+message PasswordResetRequest {
+    string email = 1;
+    string new_password = 2;
+    string token = 3;
+}
+
+message ChooseRewardRequest {
+    uint32 game_id = 1;
+    uint32 box_id = 2;
+}
+
+message QueryCondition {
+    string sorted_by = 1;
+    string sort = 2;
+    string limit = 3;
+    string page = 4;
+    string start_date = 5;
+    string end_date = 6;
+}
+
+message Empty {}
+
+/**
+Response definition
+*/
+message TransactionDetailResponse {
+    uint32 id = 1;
+    string transaction_date = 2;
+    string sender_name = 3;
+    string sender_wallet = 4;
+    string receipent_name = 5;
+    string receipent_wallet = 6;
+    string description = 7;
+    float amount = 8;
+}
+
+message TransactionPaginationResponse {
+    string page = 1;
+    uint32 total = 2;
+    repeated TransactionDetailResponse transactions = 3;
+}
+
+message UserResponse {
+    uint32 id = 1;
+    string name  = 2;
+    string email = 3;
+}
+
+message UserLoginResponse {
+    uint32 id = 1;
+    string name = 2;
+    string email = 3;
+    string token = 4;
+}
+
+message UserDetail {
+    uint32 id = 1;
+    string name = 2;
+    string email = 3;
+    string wallet_number = 4;
+    float balance = 5;
+    uint32 chance = 6;
+}
+
+message ForgotPasswordToken {
+    string token = 1;
+}
+
+/*
+Service definition
+*/
+service UserService {
+    rpc RegisterUser(UserRegisterRequest) returns (UserResponse);
+    rpc LoginUser(UserLoginRequest) returns (UserResponse);
+    rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordToken);
+    rpc ResetPassword(PasswordResetRequest) returns (UserResponse);
+}
+
+service TransactionService {
+    rpc CreateTransferTransaction(TransferRequest) returns (TransactionDetailResponse);
+    rpc CreateTopupTransaction(TopupRequest) returns (TransactionDetailResponse);
+    rpc GetAllTransactionsRecords(QueryCondition) returns (TransactionPaginationResponse);
+}
+
+// service GameService {
+//     rpc PlayGame(Empty) returns (Empty);
+//     rpc ChooseReward(ChooseRewardRequest) returns (ChooseRewardRequest);
+// }

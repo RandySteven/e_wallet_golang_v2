@@ -3,7 +3,7 @@ package res
 import "github.com/shopspring/decimal"
 
 type UserResponse struct {
-	ID    uint
+	ID    uint   `json:"id"`
 	Name  string `json:"name,omitempty"`
 	Email string `json:"email,omitempty"`
 }
@@ -16,6 +16,7 @@ type UserLoginResponse struct {
 }
 
 type UserDetail struct {
+	ID           uint            `json:"id"`
 	Name         string          `json:"name,omitempty"`
 	Email        string          `json:"email,omitempty"`
 	WalletNumber string          `json:"wallet_number,omitempty"`
