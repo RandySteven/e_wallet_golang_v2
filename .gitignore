@@ -1,1 +1,2 @@
 .env
+db/pg_data
