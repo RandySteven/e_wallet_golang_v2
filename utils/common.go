@@ -4,11 +4,13 @@ import (
 	"fmt"
 
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/auth"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/payload/req"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/enums"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func Validate(obj any, err error) []string {
@@ -49,4 +51,22 @@ func ValidateWinBox(game *models.Game, chooseReward *req.ChooseReward) (uint, er
 		return boxId, &apperror.ErrInvalidRequest{Field: enums.BoxId}
 	}
 	return boxId, nil
+}
+
+func ValidateToken(tokenString string) *auth.JWTClaim {
+
+	if tokenString == "" {
+		return nil
+	}
+
+	claims := &auth.JWTClaim{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+		return auth.JWT_KEY, nil
+	})
+
+	if err != nil || !token.Valid {
+		return nil
+	}
+
+	return claims
 }
