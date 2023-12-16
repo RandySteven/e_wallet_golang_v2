@@ -24,6 +24,18 @@ func init() {
 	lw.Out = file
 }
 
+func NewLog() Logger {
+	if Log == nil {
+		lw := logrus.New()
+		lw.SetFormatter(&logrus.JSONFormatter{})
+		lw.SetOutput(os.Stdout)
+		Log = &loggerWrapper{
+			lw: lw,
+		}
+	}
+	return Log
+}
+
 type Logger interface {
 	Info(args ...interface{})
 	Infof(format string, args ...interface{})

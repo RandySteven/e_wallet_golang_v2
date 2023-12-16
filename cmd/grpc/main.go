@@ -5,6 +5,7 @@ import (
 
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apps"
 	handler_grpc "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/handlers/grpc"
+	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/interceptor"
 	pb "git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/proto"
 	"google.golang.org/grpc"
 )
@@ -15,7 +16,9 @@ func main() {
 		return
 	}
 
-	opt := []grpc.ServerOption{}
+	opt := []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(interceptor.AuthInterceptor, interceptor.ErrorInterceptor, interceptor.LoggerInterceptor),
+	}
 
 	server := grpc.NewServer(opt...)
 
