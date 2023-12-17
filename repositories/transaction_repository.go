@@ -138,7 +138,7 @@ func (repo *transactionRepository) CreateTransferTransaction(ctx context.Context
 			return err
 		}
 
-		err = tx.Create(&transaction).Error
+		err = tx.Create(&transaction).Find(&transaction).Error
 		if err != nil {
 			return err
 		}
@@ -168,7 +168,7 @@ func (repo *transactionRepository) CreateTopupTransaction(ctx context.Context, t
 			return err
 		}
 
-		err = tx.Save(&transaction).Error
+		err = tx.Create(&transaction).Find(&transaction).Error
 		if err != nil {
 			return err
 		}

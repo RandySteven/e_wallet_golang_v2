@@ -86,9 +86,10 @@ func (handler *TransactionHandler) TopupTransaction(c *gin.Context) {
 		return
 	}
 
+	transactionDetail := res.TransactionResponse(transaction)
 	resp := res.Response{
 		Message: "Success to top up balance",
-		Data:    transaction,
+		Data:    transactionDetail,
 	}
 
 	c.JSON(http.StatusCreated, resp)
@@ -117,9 +118,10 @@ func (handler *TransactionHandler) TransferTransaction(c *gin.Context) {
 		return
 	}
 
+	transactionRes := res.TransactionResponse(transaction)
 	resp := res.Response{
 		Message: "Success to top up balance",
-		Data:    transaction,
+		Data:    transactionRes,
 	}
 
 	c.JSON(http.StatusCreated, resp)

@@ -2,8 +2,8 @@ package handlers_rest
 
 import (
 	"context"
+	"log"
 	"net/http"
-	"strconv"
 
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/apperror"
 	"git.garena.com/sea-labs-id/bootcamp/batch-02/randy-steven/assignment-go-rest-api/entities/models"
@@ -81,17 +81,14 @@ func (handler *UserHandler) ResetPassword(c *gin.Context) {
 // GetUserById implements interfaces.UserHandler.
 func (handler *UserHandler) GetUserById(c *gin.Context) {
 	var (
-		requestId = uuid.NewString()
-		ctx       = context.WithValue(c.Request.Context(), "request_id", requestId)
+		requestId    = uuid.NewString()
+		ctx          = context.WithValue(c.Request.Context(), "request_id", requestId)
+		getUserId, _ = c.Get("x-user-id")
+		userId, _    = getUserId.(uint)
 	)
-	paramId := c.Param("id")
-	id, err := strconv.Atoi(paramId)
-	if err != nil {
-		c.Error(&apperror.ErrInvalidFormat{Message: "id invalid format"})
-		return
-	}
+	log.Println(userId)
 
-	userDetail, err := handler.usecase.GetUserDetail(ctx, uint(id))
+	userDetail, err := handler.usecase.GetUserDetail(ctx, userId)
 	if err != nil {
 		c.Error(err)
 		return

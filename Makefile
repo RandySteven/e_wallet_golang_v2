@@ -1,5 +1,5 @@
 exec_rest:
-	go run ./cmd/rest/main.go
+	go run ./cmd/rest/
 
 protoc_grpc:
 	protoc --go_out=. --go-grpc_out=. ./proto/*.proto

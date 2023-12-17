@@ -39,25 +39,9 @@ func (usecase *transactionUsecase) GetAllTransactionsRecords(ctx context.Context
 
 	var transactionDetails = []res.TransactionDetailResponse{}
 	for _, transaction := range transactions {
-		transactionDetail := res.TransactionDetailResponse{
-			ID:              transaction.ID,
-			TransactionDate: transaction.CreatedAt,
-			Description:     transaction.Description,
-			Amount:          transaction.Amount,
-		}
+		transactionDetail := res.TransactionResponse(&transaction)
 
-		if transaction.ReceiverID == transaction.SenderID {
-			transactionDetail.TransactionType = enums.Topup
-		} else {
-			transactionDetail.TransactionType = enums.Transfer
-			transactionDetail.SenderName = transaction.Sender.User.Name
-			transactionDetail.SenderWallet = transaction.Sender.Number
-		}
-
-		transactionDetail.ReceipentName = transaction.Receiver.User.Name
-		transactionDetail.ReceipentWallet = transaction.Receiver.Number
-
-		transactionDetails = append(transactionDetails, transactionDetail)
+		transactionDetails = append(transactionDetails, *transactionDetail)
 	}
 
 	transactionPage := &res.TransactionPaginationResponses{
