@@ -22,6 +22,8 @@ WHERE id = 11;
 
 SELECT * FROM source_of_funds;
 
+SELECT * FROM wallets;
+
 INSERT INTO source_of_funds (source)
 VALUES
     ('Bank Transfer'),

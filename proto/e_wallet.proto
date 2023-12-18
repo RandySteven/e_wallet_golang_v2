@@ -106,9 +106,7 @@ Service definition
 */
 service UserService {
     rpc RegisterUser(UserRegisterRequest) returns (UserResponse);
-    rpc LoginUser(UserLoginRequest) returns (UserResponse);
-    rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordToken);
-    rpc ResetPassword(PasswordResetRequest) returns (UserResponse);
+    rpc LoginUser(UserLoginRequest) returns (UserLoginResponse);
 }
 
 service TransactionService {

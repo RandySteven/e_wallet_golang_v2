@@ -1,9 +1,9 @@
 package enums
 
 const (
-	BankTransfer = "Bank Transfer"
-	CreditCard   = "Credit Card"
-	Cash         = "Cash"
-	Reward       = "Reward"
-	Others       = "Other"
+	BankTransfer = 1
+	CreditCard   = 2
+	Cash         = 3
+	Reward       = 4
+	Others       = 5
 )

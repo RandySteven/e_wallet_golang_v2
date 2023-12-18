@@ -1,0 +1,17 @@
+proto < ./../proto/e_wallet.proto
+@host=http://localhost:50053
+
+### Register User
+GRPC /UserService/RegisterUser
+{
+    "name": "Rinjuman",
+    "email": "rinju.man@gmail.com",
+    "password": "test1234"
+}
+
+### Login User
+GRPC /UserService/LoginUser
+{
+    "email": "randy.steven@gmail.com",
+    "password": "test1234"
+}

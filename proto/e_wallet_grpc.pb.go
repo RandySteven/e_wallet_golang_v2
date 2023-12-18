@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	RegisterUser(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	LoginUser(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	LoginUser(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 	ForgotPassword(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordToken, error)
 	ResetPassword(ctx context.Context, in *PasswordResetRequest, opts ...grpc.CallOption) (*UserResponse, error)
 }
@@ -45,8 +45,8 @@ func (c *userServiceClient) RegisterUser(ctx context.Context, in *UserRegisterRe
 	return out, nil
 }
 
-func (c *userServiceClient) LoginUser(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	out := new(UserResponse)
+func (c *userServiceClient) LoginUser(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error) {
+	out := new(UserLoginResponse)
 	err := c.cc.Invoke(ctx, "/e_wallet.UserService/LoginUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func (c *userServiceClient) ResetPassword(ctx context.Context, in *PasswordReset
 // for forward compatibility
 type UserServiceServer interface {
 	RegisterUser(context.Context, *UserRegisterRequest) (*UserResponse, error)
-	LoginUser(context.Context, *UserLoginRequest) (*UserResponse, error)
+	LoginUser(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
 	ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordToken, error)
 	ResetPassword(context.Context, *PasswordResetRequest) (*UserResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -90,7 +90,7 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) RegisterUser(context.Context, *UserRegisterRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
-func (UnimplementedUserServiceServer) LoginUser(context.Context, *UserLoginRequest) (*UserResponse, error) {
+func (UnimplementedUserServiceServer) LoginUser(context.Context, *UserLoginRequest) (*UserLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
 func (UnimplementedUserServiceServer) ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordToken, error) {

@@ -1,0 +1,17 @@
+proto < ./../proto/e_wallet.proto
+@host=http://localhost:50053
+
+{{
+    exports.token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiTmFtZSI6IlJhbmR5IFN0ZXZlbiIsIkVtYWlsIjoicmFuZHkuc3RldmVuQGdtYWlsLmNvbSIsImlzcyI6IkFQUExJQ0FUSU9OIiwiZXhwIjoxNzAyODcyNTU1LCJpYXQiOjE3MDI4Njg5NTV9.JXy-9o1tj1PX84cQL2RcnM2G2o-3eDAyrD-Cl7MfIac";
+}}
+### Transfer 
+GRPC /TransactionService/CreateTransferTransaction
+authorization: {{token}}
+{
+    "receiverWalletId": "1000000000004",
+    "amount": 100000,
+    "description": ""
+}
+
+
+### Top up

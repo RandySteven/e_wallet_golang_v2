@@ -65,7 +65,6 @@ func (repo *userRepository) CommitOrRollback(ctx context.Context) {
 
 // GetByEmail implements interfaces.UserRepository.
 func (repo *userRepository) GetByEmail(ctx context.Context, email string) (*models.User, error) {
-	repo.db.WithContext(ctx).Exec("SELECT pg_sleep(3)")
 	var user *models.User
 	err := repo.db.WithContext(ctx).Model(&models.User{}).
 		Where("email = ?", email).

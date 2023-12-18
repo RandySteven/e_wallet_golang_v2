@@ -15,10 +15,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("no env got")
 	}
+}
+
+func main() {
+
 	r := gin.Default()
 	r.ContextWithFallback = true
 	r.Use(middleware.LoggerMiddleware())

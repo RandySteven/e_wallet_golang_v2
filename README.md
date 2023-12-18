@@ -1,6 +1,6 @@
 # assignment-go-rest-api
 
-Postman Documentation Links : https://shorturl.at/HJNQ7
+<!-- Postman Documentation Links : https://shorturl.at/HJNQ7
 
 Coverage : 98.7%
 ~[Alt coverage](/img/coverage.png)
@@ -149,4 +149,4 @@ Response Code - 400
     ]
 }
 ```
-![Alt register-failed-email](/img/register_failed_email_already_exists.png)
+![Alt register-failed-email](/img/register_failed_email_already_exists.png) -->

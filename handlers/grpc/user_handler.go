@@ -20,7 +20,7 @@ func (h *UserHandler) ForgotPassword(ctx context.Context, request *pb.ForgotPass
 }
 
 // LoginUser implements proto.UserServiceServer.
-func (h *UserHandler) LoginUser(ctx context.Context, request *pb.UserLoginRequest) (*pb.UserResponse, error) {
+func (h *UserHandler) LoginUser(ctx context.Context, request *pb.UserLoginRequest) (*pb.UserLoginResponse, error) {
 
 	loginReq := &req.UserLoginRequest{
 		Email:    request.Email,
@@ -32,10 +32,11 @@ func (h *UserHandler) LoginUser(ctx context.Context, request *pb.UserLoginReques
 		return nil, err
 	}
 
-	return &pb.UserResponse{
+	return &pb.UserLoginResponse{
 		Id:    uint32(user.ID),
 		Name:  user.Name,
 		Email: user.Email,
+		Token: user.Token,
 	}, nil
 }
 

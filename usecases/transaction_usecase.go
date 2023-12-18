@@ -63,7 +63,7 @@ func (usecase *transactionUsecase) CreateTopupTransaction(ctx context.Context, t
 		return nil, &apperror.ErrInvalidRequest{Field: enums.SourceOfFund}
 	}
 
-	sourceFund, err := usecase.sourceFundRepo.GetSourceOfFundBySource(ctx, topup.SourceOfFund)
+	sourceFund, err := usecase.sourceFundRepo.GetById(ctx, topup.SourceOfFund)
 	if err != nil {
 		return nil, err
 	}
